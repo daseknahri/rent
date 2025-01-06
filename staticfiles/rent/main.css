@@ -1,0 +1,553 @@
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .dry {
+    color: aliceblue;
+}
+/* Additional custom styles for the navbar */
+.navbar {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Ensure the navbar text color changes correctly */
+.navbar-light .navbar-nav .nav-link {
+    color: white;
+}
+
+/* Change the text color of nav links when navbar has a white background */
+.navbar-light .navbar-nav .nav-link.active, 
+.navbar-light .navbar-nav .nav-link:hover {
+    color: rgb(0, 0, 0);
+}
+    /* Ensure all images have the same size and maintain the aspect ratio */
+.car-image {
+    width: 100%; /* Make the image take up the full width of the card */
+    height: 200px; /* Set a fixed height for the image */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}
+
+/* Optionally, you can add a border-radius for rounded corners */
+.card-img-top {
+    border-radius: 10px;
+}
+
+.car-price {
+    font-size: medium;
+    font-weight: bold;
+    color: #ff5733; /* Bright orange for visibility */
+    margin: 5px 0;
+}
+
+
+.overlay {
+top: 0;
+left: 0;
+background-color: rgba(0, 0, 0, 0.5); /* Darken the background */
+z-index: 0; /* Ensure it's behind the content */
+}
+body {
+font-family: 'Poppins', sans-serif;
+}
+
+/* You can also apply it specifically to headers */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600; /* For bold headers */
+}
+
+/* For body text or other elements, you can specify weight as well */
+p, li, span {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 400; /* Regular weight */
+}
+
+/* Section Styling */
+.car-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  /* Add margin and center the content */
+  .car-section .container {
+    max-width: 1000px; /* Limit the width of the section */
+    margin: 0 auto; /* Center horizontally */
+    padding: 0 20px; /* Add padding for spacing on smaller screens */
+  }
+  
+  .section-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0d1326;
+    margin-bottom: 10px;
+  }
+  
+  .section-header p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 40px;
+  }
+
+/* Section Styling */
+.car-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: #ffffff;
+  }
+  
+  .section-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #0d1326;
+    margin-bottom: 10px;
+  }
+  
+  .section-header p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 40px;
+  }
+  
+  /* Grid Layout for Cards */
+  .car-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 10px; /* Spacing between cards */
+  }
+  
+  @media (max-width: 1024px) {
+    .car-cards {
+      grid-template-columns: repeat(2, 1fr); /* 2 cards per row on medium screens */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .car-cards {
+      grid-template-columns: 1fr; /* 1 card per row on small screens */
+    }
+  }
+  
+  /* Individual Car Card */
+  .car-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .car-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 10px;
+  }
+  
+  /* Tags */
+  .car-tags {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .tag {
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 12px;
+  }
+  
+  .new-arrival {
+    background-color: #ff006e;
+  }
+  
+  .best-seller {
+    background-color: #1cb96e;
+  }
+  
+  .best-price {
+    background-color: #007bff;
+  }
+  
+  /* Title */
+  .car-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  /* Ratings */
+  .car-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+  }
+  
+  .stars {
+    color: #ffc107;
+    font-size: 1rem;
+  }
+  
+  .reviews {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  /* Details */
+  .car-details {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .icon {
+    font-size: 1.2rem;
+    color: #007bff;
+    margin-bottom: 5px;
+  }
+  
+  /* Rent Button */
+  .rent-button {
+    background-color: #0d1326;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .rent-button:hover {
+    background-color: #333;
+  }
+
+
+.title {
+    font-weight: bold; /* Makes the text bold */
+    font-size: 2.5rem; /* Larger font size */
+    color: #0d1326; /* Set your desired color */
+    text-transform: capitalize; /* Capitalizes the first letter */
+    letter-spacing: 2px; /* Adds space between letters */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow for depth */
+    display: inline-block; /* Ensures proper spacing if used inline */
+    margin: 20px 0; /* Adds space above and below */
+    font-family: 'Arial', sans-serif; /* Use a modern font */
+  }
+  
+.title:hover {
+    color: #007bff; /* Change color on hover */
+    text-shadow: 4px 4px 8px rgba(0, 123, 255, 0.3); /* Add hover shadow effect */
+    transition: all 0.3s ease; /* Smooth transition effect */
+  }
+  
+
+/* Button Container */
+.button-container {
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+  }
+  
+  /* General Button Styles */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 25px;
+    border-radius: 50px; /* Rounded corners */
+    font-size: 1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  /* Primary Button (White Background) */
+  .primary-button {
+    background-color: #ffffff;
+    color: #0d1326;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  .primary-button:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Secondary Button (Transparent Background) */
+  .secondary-button {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+  }
+  
+  .secondary-button:hover {
+    background-color: #ffffff;
+    color: #0d1326;
+    transition: all 0.3s ease;
+  }
+  
+  /* WhatsApp Icon for Primary Button */
+  .button-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+
+
+.features-section {
+width: 100%;
+background-color: #0d1326;
+color: #fff;
+text-align: center;
+padding: 50px 20px;
+}
+
+.features-header h1 {
+font-size: 2.5rem;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+.features-header p {
+font-size: 1rem;
+color: #a0a3b1;
+margin-bottom: 40px;
+}
+
+.features-container {
+display: flex;
+justify-content: center;
+flex-wrap: wrap;
+gap: 20px;
+}
+
+.feature-card {
+background-color: #1b2135;
+border-radius: 10px;
+padding: 20px;
+text-align: center;
+width: 250px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card .icon {
+font-size: 2rem;
+margin-bottom: 15px;
+}
+
+.feature-card h3 {
+font-size: 1.25rem;
+margin-bottom: 10px;
+}
+
+.feature-card p {
+font-size: 0.9rem;
+color: #a0a3b1;
+}
+
+.contact-section {
+margin-top: 40px;
+}
+
+.contact-section p {
+font-size: 1rem;
+color: #a0a3b1;
+margin-bottom: 10px;
+}
+
+.contact-button {
+display: inline-block;
+background-color: #fff;
+color: #0d1326;
+text-decoration: none;
+padding: 10px 20px;
+border-radius: 50px;
+font-size: 1rem;
+font-weight: bold;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.contact-button:hover {
+background-color: #a0a3b1;
+color: #fff;
+transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+.features-container {
+    flex-direction: column;
+    align-items: center;
+}
+}
+
+/* Footer Styling */
+
+
+footer {
+    background-color: #f9f9f9;
+    margin: 0; /* Removes any gap above the footer */
+    padding: 0; /* No extra padding outside the footer */
+    text-align: center;
+}
+  
+  /* Top Section with Background Image */
+  .footer-top {
+    background-size: cover;
+    background-position: center;
+    padding: 60px 20px;
+    color: #fff;
+    text-align: center;
+  }
+  
+  .footer-top h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Add shadow for better visibility */
+  }
+  
+  .footer-button {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: #0d1326;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+  }
+  
+  .footer-button:hover {
+    background-color: #e6e6e6;
+  }
+  
+  .footer-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+  
+  /* Bottom Section */
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px;
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .footer-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: 300px;
+    text-align: left;
+  }
+  
+  .footer-info p {
+    font-size: 0.9rem;
+    color: #333333;
+    margin: 0;
+  }
+  
+  .footer-info a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .footer-info a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-icon {
+    font-size: 1.5rem;
+    color: #007bff;
+  }
+  
+  /* Footer End Section */
+.footer-end {
+    background-color: #0d1326; /* Dark background */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    color: #fff;
+  }
+  
+  .footer-logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  .footer-socials {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .social-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: #1b2135; /* Slightly lighter dark circle */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .social-icon img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1); /* Ensures the icon is white */
+  }
+  
+  .social-icon:hover {
+    background-color: #ffffff; /* White on hover */
+  }
+  
+  .social-icon:hover img {
+    filter: invert(0); /* Icon changes to dark when background is white */
+  }
+  
+  .footer-overlay {
+    background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+    padding: 50px 20px;
+    border-radius: 12px;
+  }
+
