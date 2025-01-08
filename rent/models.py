@@ -16,7 +16,7 @@ class Car(models.Model):
     ]
     
     name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='cars/')
+    image = models.ImageField(upload_to='cars/') 
     year = models.PositiveIntegerField(default=2020)    
     gearbox = models.CharField(max_length=20, choices=GEARBOX_CHOICES, default='manual')
     fuel_type = models.CharField(max_length=20, choices=FUEL_CHOICES, default='petrol')
