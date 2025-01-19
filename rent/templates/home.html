@@ -73,7 +73,7 @@
                         <span class="stars">★★★★★</span>
                         <span class="reviews">(5 avis)</span>
                     </div>
-                    <p class="car-price" style="font-size: medium; font-weight: bold; color: #ff5733;">{{ car.prix }} DH /Jour</p>
+                    <p class="car-price" style="font-size: medium; font-weight: bold; color: #ff5733;">{{ car.daily_rate }} DH /Jour</p>
                     <div class="car-details">
                         <div class="detail-item">
                             <i class="fas fa-calendar-alt icon"></i>
@@ -162,7 +162,7 @@
           <div class="footer-info">
             <span class="footer-icon">🎧</span>
             <p>
-              Tel: <a href="tel:+212661649486">+212 6 61 64 94 86</a>; <br>
+              Tel: <a href="tel:+2126">+212 6 61 64 94 86</a>; <br>
               Tel: <a href="tel:+212665671263">+212 6 65 67 12 63</a>; <br>
               Email: <a href="mailto:elleskmirino@gmail.com">elleskmirino@gmail.com</a>
             </p>
@@ -276,7 +276,7 @@
                     return;
                 }
 
-                const message = `I would like to reserve the ${carName} in ${city} from ${startDate} to ${endDate}.`;
+                const message =`أود حجز سيارة ${carName} في ${city} من ${startDate} إلى ${endDate}.`;
 
                 const whatsappLink = `https://wa.me/+212618201196?text=${encodeURIComponent(message)}`;
                 window.open(whatsappLink, '_blank');
