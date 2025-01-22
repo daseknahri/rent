@@ -57,8 +57,8 @@
     <div class="content">
         <div class="section">
             <h3>Client Details</h3>
-            <p><strong>Name:</strong> {{ reservation.client.user.get_full_name }}</p>
-            <p><strong>Email:</strong> {{ reservation.client.user.email }}</p>
+            <p><strong>Name:</strong> {{ reservation.client.user.username }}</p>
+            <p><strong>Email:</strong> {{ reservation.client.address }}</p>
             <p><strong>Phone:</strong> {{ reservation.client.phone_number }}</p>
         </div>
         <div class="section">
@@ -67,26 +67,6 @@
             <p><strong>Start Date:</strong> {{ reservation.start_date }}</p>
             <p><strong>End Date:</strong> {{ reservation.end_date }}</p>
             <p><strong>Total Cost:</strong> ${{ reservation.total_cost }}</p>
-            <p><strong>Payment Status:</strong> {{ reservation.payment_status }}</p>
-        </div>
-        <div class="section">
-            <h3>Payment Summary</h3>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Payment Date</th>
-                        <th>Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for payment in reservation.payments.all %}
-                    <tr>
-                        <td>{{ payment.payment_date }}</td>
-                        <td>${{ payment.amount }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
     <div class="footer">

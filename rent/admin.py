@@ -1,6 +1,36 @@
+from django.db.models import Sum
+from django.db.models.functions import TruncMonth
+from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
+from django.urls import path
+from django.urls import reverse
+
 from django.contrib import admin
 from .models import Car, Client, Reservation, CarExpenditure, Payment
 from django.utils.html import format_html
+
+class CustomAdminSite(admin.AdminSite):
+    
+    site_header = "TWINS T.B CAR"
+    site_title = "Car Rental Management"
+    index_title = "Welcome to Rent Administration"
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('revenue-report/', self.admin_view(revenue_report), name='revenue_report'),
+        ]
+        return custom_urls + urls
+    
+    def index(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['custom_links'] = [
+            {'url': reverse('revenue_report'), 'name': 'Revenue Report'},
+        ]
+        return super().index(request, extra_context)
+
+admin_site = CustomAdminSite(name='custom_admin')
+
+
 
 ### INLINE FOR EXPENDITURES IN CARS ###
 class CarExpenditureInline(admin.TabularInline):
@@ -8,15 +38,19 @@ class CarExpenditureInline(admin.TabularInline):
     extra = 1  # Allows admin to add expenditures directly in the car interface
     readonly_fields = ('date',)  # Prevent editing the date
 
+class ReservationInline(admin.TabularInline):
+    model = Reservation
+    extra = 0  # Prevent adding new reservations from the car page
+    readonly_fields = ('total_cost', 'payment_status', 'total_paid')
 
 ### CAR ADMIN ###
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ('name', 'plate_number', 'year', 'image', 'daily_rate', 'total_expenditure')
+    list_display = ('name', 'plate_number', 'year', 'image', 'daily_rate', 'total_expenditure','is_available')
     list_filter = ('year', 'daily_rate')  # Filter by car brand and year
     search_fields = ('plate_number', 'name')  # Search by plate number, brand, or model
     readonly_fields = ('total_expenditure',)  # Prevent editing total expenditure
-    inlines = [CarExpenditureInline]  # Add expenditures inline
+    inlines = [CarExpenditureInline, ReservationInline]  # Add expenditures inline
 
     fieldsets = (
         ('Car Information', {
@@ -27,6 +61,22 @@ class CarAdmin(admin.ModelAdmin):
         }),
     )
 
+@staff_member_required
+def revenue_report(request):
+    """
+    Custom view for displaying revenue and expenditure report.
+    """
+    # Group reservations by month and calculate revenue
+    data = (
+        Reservation.objects.annotate(month=TruncMonth('start_date'))
+        .values('month')
+        .annotate(
+            total_revenue=Sum('total_cost'),
+            total_expenditures=Sum('car__expenditures__cost'),
+        )
+        .order_by('month')
+    )
+    return render(request, 'admin/revenue_report.html', {'data': data})
 
 ### CLIENT ADMIN ###
 @admin.register(Client)
@@ -51,20 +101,21 @@ class PaymentInline(admin.TabularInline):
     readonly_fields = ('payment_date',)  # Payment date is auto-filled
 
 
+
 ### RESERVATION ADMIN ###
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('car', 'client', 'start_date', 'end_date', 'total_cost', 'payment_status', 'initial_payment', 'pdf_link')
+    list_display = ('pk', 'car', 'client', 'start_date', 'end_date', 'total_cost', 'payment_status', 'total_paid', 'pdf_link')
     list_filter = ('payment_status', 'start_date', 'end_date')  # Filter by payment status and rental period
-    search_fields = ('car__plate_number', 'client__user__username', 'client__user__email')  # Search by car or client
-    readonly_fields = ('total_cost', 'payment_status', 'pdf_link')  # Prevent editing calculated fields
-    #inlines = [PaymentInline]  # Add payments inline
+    search_fields = ('car__plate_number', 'client__user__username')  # Search by car or client
+    readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  # Prevent editing calculated fields
+    inlines = [PaymentInline]  # Add payments inline
     fieldsets = (
         ('Reservation Details', {
             'fields': ('car', 'client', 'start_date', 'end_date')
         }),
         ('Payment Information', {
-            'fields': ('initial_payment', 'total_cost', 'payment_status')
+            'fields': ('total_paid', 'total_cost', 'payment_status')
         }),
     )
     def pdf_link(self, obj):
@@ -97,7 +148,20 @@ class PaymentAdmin(admin.ModelAdmin):
             'fields': ('reservation', 'amount', 'payment_date')
         }),
     )
+    '''def total_cost(self, obj):
+        """
+        Custom field to display the total cost of the reservation.
+        """
+        return obj.reservation.total_cost if obj.reservation else None
+    total_cost.short_description = 'Reservation Total Cost'
 
+    def total_paid(self, obj):
+        """
+        Custom field to display the total amount paid for the reservation so far.
+        """
+        return obj.reservation.total_paid if obj.reservation else None
+    total_paid.short_description = 'Total Paid'
+    '''
 
 ### CAR EXPENDITURE ADMIN ###
 @admin.register(CarExpenditure)
@@ -112,3 +176,15 @@ class CarExpenditureAdmin(admin.ModelAdmin):
             'fields': ('car', 'description', 'cost', 'date')
         }),
     )
+
+admin_site.register(Car, CarAdmin)
+admin_site.register(Client, ClientAdmin)
+admin_site.register(Reservation, ReservationAdmin)
+admin_site.register(Payment, PaymentAdmin)
+admin_site.register(CarExpenditure, CarExpenditureAdmin)
+
+admin.site.register(Car, CarAdmin)
+admin.site.register(Client, ClientAdmin)
+admin.site.register(Reservation, ReservationAdmin)
+admin.site.register(Payment, PaymentAdmin)
+admin.site.register(CarExpenditure, CarExpenditureAdmin)

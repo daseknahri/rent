@@ -1,7 +1,11 @@
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models
+from django.forms import ValidationError
 from django.utils.timezone import now
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -34,8 +38,28 @@ class Car(models.Model):
     daily_rate = models.DecimalField(max_digits=10, decimal_places=2)    
     total_expenditure = models.DecimalField(max_digits=12, decimal_places=2, default=0.00) 
 
+    def delete(self, *args, **kwargs):
+        """
+        Override the delete method to handle cleanup.
+        """
+        # Delete related reservations and expenditures
+        self.reservations.all().delete()
+        self.expenditures.all().delete()
+
+        # Delete the car's image from the filesystem
+        if self.image:
+            self.image.delete(save=False)
+
+        # Call the original delete method
+        super().delete(*args, **kwargs)
+
+    @property
+    def is_available(self):
+        # Check if the car has any active reservations
+        return not self.reservations.filter(end_date__gte=now().date()).exists()
+
     def __str__(self):
-        return f"{self.name} ({self.plate_number})"
+        return f"{self.name} ({self.plate_number}) - {'Available' if self.is_available else 'Rented'}"
 
 class Client(models.Model):
     """
@@ -76,8 +100,19 @@ class Reservation(models.Model):
         ('Paid', 'Paid'),
         ('Partially Paid', 'Partially Paid'),
         ('Unpaid', 'Unpaid')], default='Unpaid')
-    initial_payment = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, help_text="Initial payment made during reservation")
+    total_paid = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)  # Tracks total payments made
     pdf_receipt = models.FileField(upload_to='reservations/pdfs/', blank=True, null=True)
+
+    def clean(self):
+        if self.start_date < now().date():
+            raise ValidationError("Reservation start date cannot be in the past.")
+        if Reservation.objects.filter(
+            car=self.car,
+            end_date__gte=self.start_date,
+            start_date__lte=self.end_date,
+        ).exists():
+            raise ValidationError("This car is already reserved for the selected dates.")
+        super().clean()
 
     def generate_pdf_receipt(self):
         """
@@ -87,7 +122,10 @@ class Reservation(models.Model):
         context = {
             'reservation': self,
             'now': now(),
+            'company_name': 'Your Company Name',
+            'company_logo': '/path/to/logo.png',
         }
+        
         html_content = render_to_string('reservation_pdf.html', context)
 
         # Generate the PDF file
@@ -99,7 +137,7 @@ class Reservation(models.Model):
         self.pdf_receipt = f'reservations/pdfs/reservation_{self.pk}.pdf'
 
     def __str__(self):
-        return f"Reservation {self.pk}: {self.client.user.get_full_name()} - {self.car}"
+        return f"Reservation {self.pk}: {self.client.user.username} - {self.car}"
 
     def calculate_total_cost(self):
         """
@@ -112,14 +150,13 @@ class Reservation(models.Model):
         """
         Update the payment status of this reservation based on its payments.
         """
-        total_paid = sum(payment.amount for payment in self.payments.all())
-        if total_paid >= self.total_cost:
+        if self.total_paid >= self.total_cost:
             self.payment_status = 'Paid'
-        elif total_paid > 0:
+        elif self.total_paid > 0:
             self.payment_status = 'Partially Paid'
         else:
             self.payment_status = 'Unpaid'
-        self.save()
+        self.save(update_fields=['payment_status'])
 
     def save(self, *args, **kwargs):
         """
@@ -127,34 +164,53 @@ class Reservation(models.Model):
         """
         # Calculate the total cost of the reservation
         self.total_cost = self.calculate_total_cost()
+        old_instance = Reservation.objects.filter(pk=self.pk).first()
+        if not old_instance or old_instance.start_date != self.start_date or old_instance.end_date != self.end_date or old_instance.car != self.car:
+            self.total_cost = self.calculate_total_cost()
 
         # Check if this is the first save (before generating PDF)
-        is_new_instance = not self.pk
 
         super().save(*args, **kwargs)
-
-        # Generate the PDF receipt after saving (only for new instances)
-        if is_new_instance and not self.pdf_receipt:
-            self.generate_pdf_receipt()
-            # Save the PDF path only (to avoid recursion)
-            super().save(update_fields=['pdf_receipt'])
-
-        # Handle the initial payment logic
-        if self.initial_payment > 0 and is_new_instance:
-            self.payment_status = 'Partially Paid'
-            if self.initial_payment == self.total_cost:
-                self.payment_status = 'Paid'
-
-            # Create a Payment object only if initial_payment is greater than 0
-            Payment.objects.create(
-                reservation=self,
-                amount=self.initial_payment,
-                payment_date=now()
-            )
-
-        # Update the client's payment info after saving the reservation
         self.client.update_payment_info()
 
+        # Generate the PDF receipt after saving (only for new instances)
+       # if not self.pdf_receipt:
+        #    self.generate_pdf_receipt()
+            # Save the PDF path only (to avoid recursion)
+         #   super().save(update_fields=['pdf_receipt'])
+        if not self.pdf_receipt or (
+            old_instance
+            and (
+                old_instance.start_date != self.start_date
+                or old_instance.end_date != self.end_date
+                or old_instance.car != self.car
+            )
+        ):
+            self.generate_pdf_receipt()
+            # Save only the updated pdf_receipt field to avoid recursion
+            Reservation.objects.filter(pk=self.pk).update(pdf_receipt=self.pdf_receipt)
+        send_mail(
+            'Reservation Confirmation',
+            f'Dear {self.client.user.username}, your reservation for {self.car} is confirmed.',
+            'noreply@example.com',
+            [self.client.user.email],
+            fail_silently=True,
+        )
+
+    
+    def delete(self, *args, **kwargs):
+        """
+        Override the delete method to clean up related fields.
+        """
+        # Before deleting the reservation, delete all related payments
+        self.payments.all().delete()
+
+        # Update the client's payment info
+        
+
+        # Call the original delete method
+        super().delete(*args, **kwargs)
+        self.client.update_payment_info()
 
 class CarExpenditure(models.Model):
     """
@@ -169,9 +225,28 @@ class CarExpenditure(models.Model):
         """
         Override the save method to update the total expenditure of the car.
         """
+        if self.pk:
+            old_expenditure = CarExpenditure.objects.get(pk=self.pk)
+            cost_difference = self.cost - old_expenditure.cost
+        else:
+            cost_difference = self.cost
+
         super().save(*args, **kwargs)
-        self.car.total_expenditure += self.cost
+
+        # Update the car's total expenditure
+        self.car.total_expenditure += cost_difference
+        self.car.save(update_fields=['total_expenditure'])
+
+    def delete(self, *args, **kwargs):
+        """
+        Override the delete method to update the total expenditure of the car.
+        """
+        # Subtract this expenditure from the car's total expenditure
+        self.car.total_expenditure -= self.cost
         self.car.save()
+
+        # Call the original delete method
+        super().delete(*args, **kwargs)
 
     def __str__(self):
         return f"Expenditure on {self.car}: {self.description} - {self.cost}"
@@ -188,10 +263,34 @@ class Payment(models.Model):
         """
         Override the save method to update the reservation's and client's payment statuses.
         """
+
         super().save(*args, **kwargs)
-        # Update the reservation's payment status whenever a new payment is made
+
+        #self.reservation.total_paid += float(amount_difference)
+        #self.reservation.save(update_fields=['total_paid'])
+        self.reservation.total_paid = sum(payment.amount for payment in self.reservation.payments.all())
+        self.reservation.save(update_fields=['total_paid'])
+
+        # Update the reservation's payment status
         self.reservation.update_payment_status()
+
         # Update the client's payment info
+        self.reservation.client.update_payment_info()
+
+    def delete(self, *args, **kwargs):
+        """
+        Override the delete method to update reservation's and client's payment statuses.
+        """
+        # Subtract this payment's amount from the reservation's total_paid
+        self.reservation.total_paid -= self.amount        
+        self.reservation.save(update_fields=['total_paid'])
+
+        # Update the reservation's payment status
+        self.reservation.update_payment_status()
+
+        # Update the client's payment info
+        # Call the original delete method
+        super().delete(*args, **kwargs)
         self.reservation.client.update_payment_info()
 
     def __str__(self):

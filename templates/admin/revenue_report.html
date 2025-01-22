@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <h1>Revenue and Expenditure Report</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Total Revenue</th>
+                <th>Total Expenditures</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.month|date:"F Y" }}</td>
+                    <td>{{ row.total_revenue|default:0|floatformat:2 }}</td>
+                    <td>{{ row.total_expenditures|default:0|floatformat:2 }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+{{ block.super }}
+{% if custom_links %}
+    <h2>Custom Links</h2>
+    <ul>
+        {% for link in custom_links %}
+            <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}
