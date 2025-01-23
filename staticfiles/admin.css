@@ -1,5 +1,4 @@
-#content-main th:contains("Authentication and Authorization"),
-#content-main td:contains("Authentication and Authorization") {
+.app-auth {
     display: none;
 }
 .dashboard-kpis {
