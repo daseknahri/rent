@@ -6,6 +6,10 @@ from django.urls import path
 from django.urls import reverse
 
 from django.contrib import admin
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin
+
+from .views import admin_dashboard
 from .models import Car, Client, Reservation, CarExpenditure, Payment
 from django.utils.html import format_html
 
@@ -18,15 +22,24 @@ class CustomAdminSite(admin.AdminSite):
         urls = super().get_urls()
         custom_urls = [
             path('revenue-report/', self.admin_view(revenue_report), name='revenue_report'),
+            path('dashboard/', admin_dashboard, name='dashboard')
         ]
         return custom_urls + urls
     
     def index(self, request, extra_context=None):
+        context = admin_dashboard(request)
         extra_context = extra_context or {}
         extra_context['custom_links'] = [
             {'url': reverse('revenue_report'), 'name': 'Revenue Report'},
         ]
-        return super().index(request, extra_context)
+        context.update(extra_context)
+        return super().index(request, context)
+    
+    def each_context(self, request):
+        context = super().each_context(request)
+        # Add app_list to the context for all pages
+        context['app_list'] = self.get_app_list(request)
+        return context
 
 admin_site = CustomAdminSite(name='custom_admin')
 
@@ -77,6 +90,7 @@ def revenue_report(request):
         .order_by('month')
     )
     return render(request, 'admin/revenue_report.html', {'data': data})
+
 
 ### CLIENT ADMIN ###
 @admin.register(Client)
@@ -176,7 +190,8 @@ class CarExpenditureAdmin(admin.ModelAdmin):
             'fields': ('car', 'description', 'cost', 'date')
         }),
     )
-
+admin_site.register(User, UserAdmin)
+#admin_site.register(Group)
 admin_site.register(Car, CarAdmin)
 admin_site.register(Client, ClientAdmin)
 admin_site.register(Reservation, ReservationAdmin)

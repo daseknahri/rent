@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% load i18n %}
+{% block extrahead %}
+<script src="{% static 'mobile.js' %}"></script>
+{% endblock %}
+
+{% block nav-sidebar %}
+    <!-- Sidebar Toggle Button -->
+    <button class="custom-sidebar-toggle" onclick="toggleCustomSidebar()">☰</button>
+
+    <!-- Custom Sidebar -->
+    <div id="custom-sidebar" style="display: none;">
+        <ul>
+            {% for app in app_list %}
+                {% if app.name == "Rent" %}
+                    <li class="app-label" style="margin-top: 50px;">
+                        <span onclick="toggleApp('{{ app.name }}')">{{ app.name }}</span>
+                        <ul id="app-{{ app.name }}" class="model-links">
+                            {% for model in app.models %}
+                            <li>
+                                <a href="{{ model.admin_url }}">
+                                    <i class="fa fa-database"></i> {{ model.name }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+
+    {{ block.super }}
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'mobile.css' %}">
+{% endblock %}

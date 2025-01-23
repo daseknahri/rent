@@ -1,0 +1,46 @@
+#content-main th:contains("Authentication and Authorization"),
+#content-main td:contains("Authentication and Authorization") {
+    display: none;
+}
+.dashboard-kpis {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.kpi {
+    text-align: center;
+    padding: 1rem;
+    background: #f4f4f4;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.kpi h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.kpi p {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f9f9f9;
+}
