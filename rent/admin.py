@@ -60,7 +60,7 @@ class CarExpenditureInline(admin.TabularInline):
     extra = 1  # Allows admin to add expenditures directly in the car interface
     readonly_fields = ('date',)  # Prevent editing the date
     classes = ('collapse',)
-'''
+
 class ReservationInline(admin.TabularInline):
     model = Reservation
     extra = 0  # Prevent adding new reservations from the car page
@@ -75,7 +75,7 @@ class ReservationInline(admin.TabularInline):
     readonly_fields = ('start_date', 'end_date', 'total_paid')
     template = 'admin/edit_inline/tabular_custom.html'
 
-
+'''
 ### CAR ADMIN ###
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
