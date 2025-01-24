@@ -10,6 +10,8 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import os
+from decimal import Decimal
+
 
 class Car(models.Model):
     """
@@ -227,23 +229,26 @@ class CarExpenditure(models.Model):
         """
         if self.pk:
             old_expenditure = CarExpenditure.objects.get(pk=self.pk)
-            cost_difference = self.cost - old_expenditure.cost
+            cost_difference = Decimal(self.cost) - old_expenditure.cost
         else:
-            cost_difference = self.cost
+            cost_difference = Decimal(self.cost)
 
         super().save(*args, **kwargs)
-
+        self.car.total_expenditure = Decimal(self.car.total_expenditure)
         # Update the car's total expenditure
         self.car.total_expenditure += cost_difference
         self.car.save(update_fields=['total_expenditure'])
 
     def delete(self, *args, **kwargs):
+        print(self)
+        print(self.car.total_expenditure)
         """
         Override the delete method to update the total expenditure of the car.
         """
         # Subtract this expenditure from the car's total expenditure
         self.car.total_expenditure -= self.cost
-        self.car.save()
+        print('>>>>',self.car.total_expenditure)
+        self.car.save(update_fields=['total_expenditure'])
 
         # Call the original delete method
         super().delete(*args, **kwargs)

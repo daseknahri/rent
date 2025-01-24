@@ -1,0 +1,19 @@
+{% load static i18n %}
+<table class="reservation-inline">
+    <thead>
+        <tr>
+            <th>{% trans "Start Date" %}</th>
+            <th>{% trans "End Date" %}</th>
+            <th>{% trans "Total Paid" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for inline_admin_form in inline_admin_formset %}
+        <tr>
+            <td>{{ inline_admin_form.form.start_date }}</td>
+            <td>{{ inline_admin_form.form.end_date }}</td>
+            <td>{{ inline_admin_form.form.total_paid }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
