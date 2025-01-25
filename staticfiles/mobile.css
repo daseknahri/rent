@@ -21,24 +21,49 @@
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+        width: 100%;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
     }
+    
+    table th, table td {
+        text-align: left;
+        padding: 8px;
+    }
+
 
     /* Adjust form field widths */
     .form-row {
         flex-direction: column; /* Stack labels and inputs */
         margin-bottom: 15px;
+        display: flex;
+        margin-bottom: 20px;
     }
 
     .form-row label {
-        width: 100%;
+        font-size: 16px;
         margin-bottom: 5px;
     }
 
     .form-row input, .form-row select {
         width: 100%;
     }
-}
-@media (max-width: 768px) {
+    .form-row input, .form-row select, .form-row textarea {
+        font-size: 16px;
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+    button, input[type="submit"], a.button {
+        font-size: 16px;
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
     #changelist-form .actions {
         position: sticky;
         bottom: 0;
@@ -47,97 +72,72 @@
         border-top: 1px solid #ddd;
         z-index: 1000;
     }
-}
-/* Scrollable tables for mobile */
-@media (max-width: 768px) {
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    table th, table td {
-        text-align: left;
-        padding: 8px;
-    }
-}
-
-/* Custom Sidebar Styling for Mobile */
-#custom-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 250px;
-    height: 100%;
-    background-color: #343a40;
-    overflow-y: auto;
-    padding: 15px;
-    display: none; /* Hidden by default */
-    z-index: 9999;
-}
-
-#custom-sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-#custom-sidebar ul li {
-    margin-bottom: 10px;
-}
-
-#custom-sidebar ul li a {
-    color: #ffffff;
-    text-decoration: none;
-    padding: 5px 10px;
-    display: block;
-    border-radius: 5px;
-}
-
-#custom-sidebar ul li a:hover {
-    background-color: #007bff;
-}
-
-.app-label > span { 
-    color: #ffffff;
-    cursor: pointer;
-    font-weight: bold;
-    display: block;
-    padding: 5px 0;
-}
-
-/* Sidebar Toggle Button */
-.custom-sidebar-toggle {
-    position: fixed; /* Stick to top-left corner */
-    top: 10px;
-    left: 10px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 18px;
-    border-radius: 5px;
-    z-index: 10001;
-    cursor: pointer;
-    display: block;
-}
-
-.custom-sidebar-toggle:hover {
-    background-color: #0056b3;
-}
-
-/* Mobile-Specific Styling */
-@media (max-width: 768px) {
-    /* Show sidebar toggle button on mobile */
-    .custom-sidebar-toggle {
-        display: block;
-    }
-
-    /* Show sidebar when triggered */
+    /* Custom Sidebar Styling for Mobile */
     #custom-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 130px;
+        height: 100%;
+        background-color: #343a40;
+        overflow-y: auto;
+        padding: 15px;
+        display: block; /* Hidden by default */
+        z-index: 9999;
+    }
+
+    #custom-sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #custom-sidebar ul li {
+        margin-bottom: 10px;
+    }
+
+    #custom-sidebar ul li a {
+        color: #ffffff;
+        text-decoration: none;
+        padding: 5px 10px;
+        display: block;
+        border-radius: 5px;
+    }
+
+    #custom-sidebar ul li a:hover {
+        background-color: #007bff;
+    }
+
+    .app-label > span { 
+        color: #ffffff;
+        cursor: pointer;
+        font-weight: bold;
+        display: block;
+        padding: 5px 0;
+    }
+
+    /* Sidebar Toggle Button */
+    .custom-sidebar-toggle {
+        position: fixed; /* Stick to top-left corner */
+        top: 10px;
+        left: 10px;
+        background-color: #007bff;
+        color: #ffffff;
+        border: none;
+        padding: 5px 10px;
+        font-size: 12px;
+        border-radius: 5px;
+        z-index: 10001;
+        cursor: pointer;
         display: block;
     }
+
+    .custom-sidebar-toggle:hover {
+        background-color: #0056b3;
+    }
 }
+
+
 
 /* Hide sidebar toggle and sidebar on larger screens */
 @media (min-width: 769px) {

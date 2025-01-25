@@ -1,12 +1,14 @@
+div.app-auth.module {
+  display: none; /* Hides the whole section */
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
 
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-  }
-
-  .dry {
-    color: aliceblue;
+.dry {
+  color: aliceblue;
 }
 /* Additional custom styles for the navbar */
 .navbar {

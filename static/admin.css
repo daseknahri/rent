@@ -1,5 +1,5 @@
-.app-auth {
-    display: none;
+div.app-auth.module {
+    display: none; /* Hides the whole section */
 }
 .dashboard-kpis {
     display: flex;
