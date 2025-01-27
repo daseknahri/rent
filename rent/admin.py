@@ -10,11 +10,40 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin
 
 from .views import admin_dashboard
-from .models import Car, Client, Reservation, CarExpenditure, Payment
+from .models import BusinessExpenditure, Car, Client, Reservation, CarExpenditure, Payment, Driver
 from django.utils.html import format_html
-
+from django import forms
 from django.contrib import admin
 from django.db import transaction
+
+
+@staff_member_required
+def revenue_report(request):
+    """
+    Custom view for displaying revenue and expenditure report.
+    """
+    # Group reservations by month and calculate revenue
+    data = (
+        Reservation.objects.annotate(month=TruncMonth('start_date'))
+        .values('month')
+        .annotate(
+            total_revenue=Sum('total_cost'),
+            total_expenditures=Sum('car__expenditures__cost'),
+        )
+        .order_by('month')
+    )
+    return render(request, 'admin/revenue_report.html', {'data': data})
+class ClientAdminForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = '__all__'
+
+    # Override the default widget for image fields
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['identity_card_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['driver_license_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['passport_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
 
 @admin.action(description="Delete selected objects")
 def custom_delete_selected(modeladmin, request, queryset):
@@ -52,7 +81,9 @@ class CustomAdminSite(admin.AdminSite):
 
 admin_site = CustomAdminSite(name='custom_admin')
 
-
+@admin.register(Driver)
+class DriverAdmin(admin.ModelAdmin):
+    search_fields = ['name']
 
 ### INLINE FOR EXPENDITURES IN CARS ###
 class CarExpenditureInline(admin.TabularInline):
@@ -83,7 +114,7 @@ class CarAdmin(admin.ModelAdmin):
     list_filter = ('daily_rate',)  # Filter by car brand and year
     search_fields = ('plate_number', 'name')  # Search by plate number, brand, or model
     readonly_fields = ('total_expenditure',)  # Prevent editing total expenditure
-    inlines = [CarExpenditureInline, ReservationInline]  # Add expenditures inline
+ #   inlines = [CarExpenditureInline, ReservationInline]  # Add expenditures inline
     actions = [custom_delete_selected]
 
     fieldsets = (
@@ -102,39 +133,33 @@ class CarAdmin(admin.ModelAdmin):
             del actions['delete_selected']
         return actions
 
-@staff_member_required
-def revenue_report(request):
-    """
-    Custom view for displaying revenue and expenditure report.
-    """
-    # Group reservations by month and calculate revenue
-    data = (
-        Reservation.objects.annotate(month=TruncMonth('start_date'))
-        .values('month')
-        .annotate(
-            total_revenue=Sum('total_cost'),
-            total_expenditures=Sum('car__expenditures__cost'),
-        )
-        .order_by('month')
-    )
-    return render(request, 'admin/revenue_report.html', {'data': data})
-
-
 ### CLIENT ADMIN ###
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('user', 'phone_number', 'total_amount_paid', 'total_amount_due')
-    search_fields = ('user__username', 'user__email', 'phone_number')  # Search by username, email, or phone
+    form = ClientAdminForm
+    list_display = ('name', 'phone_number', 'rating', 'total_amount_paid', 'total_amount_due', 'show_identity_card')
+    list_editable = ('rating',) 
+    search_fields = ('name', 'phone_number')  # Search by username, email, or phone
     readonly_fields = ('total_amount_paid', 'total_amount_due')  # Prevent editing payment info
+    list_filter = ('rating',)
     actions = [custom_delete_selected]
     fieldsets = (
         ('Client Information', {
-            'fields': ('user', 'phone_number', 'address')
+            'fields': ('name', 'phone_number', 'address')
+        }),
+        ('documents', {
+            'fields': ('identity_card_image', 'driver_license_image', 'passport_image')
         }),
         ('Payment Details', {
             'fields': ('total_amount_paid', 'total_amount_due')
         }),
     )
+    def show_identity_card(self, obj):
+        if obj.identity_card_image:
+            return format_html('<img src="{}" width="50" height="50" />', obj.identity_card_image.url)
+        return "No Image"
+    show_identity_card.short_description = "Identity Card"
+
     def get_actions(self, request):
         # Call the parent method to get all actions
         actions = super().get_actions(request)
@@ -145,25 +170,26 @@ class ClientAdmin(admin.ModelAdmin):
 
 
 ### INLINE FOR PAYMENTS IN RESERVATIONS ###
-class PaymentInline(admin.TabularInline):
+class PaymentInline(admin.StackedInline):
     model = Payment
+    fields = ('amount',)
     extra = 1  # Allows admin to add payments directly in the reservation interface
-    readonly_fields = ('payment_date',)  # Payment date is auto-filled
 
 
 
 ### RESERVATION ADMIN ###
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'car', 'client', 'start_date', 'end_date', 'total_cost', 'payment_status', 'total_paid', 'pdf_link')
+    list_display = ('pk', 'car', 'client', 'start_date', 'end_date', 'total_cost', 'total_paid', 'pdf_link')
+    autocomplete_fields = ['drivers']
     list_filter = ('payment_status', 'start_date', 'end_date')  # Filter by payment status and rental period
-    search_fields = ('car__plate_number', 'client__user__username')  # Search by car or client
+    search_fields = ('car__plate_number', 'client__name')  # Search by car or client
     readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  # Prevent editing calculated fields
     inlines = [PaymentInline]  # Add payments inline
     actions = [custom_delete_selected]
     fieldsets = (
         ('Reservation Details', {
-            'fields': ('car', 'client', 'start_date', 'end_date')
+            'fields': ('car', 'client', 'drivers', 'start_date', 'end_date')
         }),
         ('Payment Information', {
             'fields': ('total_paid', 'total_cost', 'payment_status')
@@ -198,7 +224,7 @@ class ReservationAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ('reservation', 'amount', 'payment_date')
     list_filter = ('payment_date',)  # Filter by payment date
-    search_fields = ('reservation__car__plate_number', 'reservation__client__user__username')  # Search by car or client
+    search_fields = ('reservation__car__plate_number', 'reservation__client__name')  # Search by car or client
     readonly_fields = ('payment_date',)  # Prevent editing payment date
     actions = [custom_delete_selected]
 
@@ -220,8 +246,8 @@ class PaymentAdmin(admin.ModelAdmin):
 @admin.register(CarExpenditure)
 class CarExpenditureAdmin(admin.ModelAdmin):
     list_display = ('car', 'description', 'cost', 'date')
-    list_filter = ('date',)  # Filter by expenditure date
-    search_fields = ('car__plate_number', 'description')  # Search by car plate number or description
+    list_filter = ('date', 'car')  # Filter by expenditure date
+    search_fields = ('car__name', 'description')  # Search by car plate number or description
     readonly_fields = ('date',)  # Prevent editing the date
     actions = [custom_delete_selected]
 
@@ -237,6 +263,13 @@ class CarExpenditureAdmin(admin.ModelAdmin):
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
+
+@admin.register(BusinessExpenditure)
+class BusinessExpenditureAdmin(admin.ModelAdmin):
+    list_display = ('description', 'amount', 'date')
+    list_filter = ('date',)
+    search_fields = ('description',)
+
 admin_site.register(User, UserAdmin)
 #admin_site.register(Group)
 admin_site.register(Car, CarAdmin)
@@ -244,3 +277,5 @@ admin_site.register(Client, ClientAdmin)
 admin_site.register(Reservation, ReservationAdmin)
 admin_site.register(Payment, PaymentAdmin)
 admin_site.register(CarExpenditure, CarExpenditureAdmin)
+admin_site.register(Driver, DriverAdmin)
+admin_site.register(BusinessExpenditure, BusinessExpenditureAdmin)

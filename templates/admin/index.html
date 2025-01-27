@@ -1,6 +1,7 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-
+{% load custom_filters %}
+<!--
 {% if custom_links %}
     <h2>Custom Links</h2>
     <ul>
@@ -8,44 +9,90 @@
             <li><a href="{{ link.url }}">{{ link.name }}</a></li>
         {% endfor %}
     </ul>
-{% endif %}
+{% endif %}-->
 {{ block.super }}
-<div class="dashboard-kpis">
-    <div class="kpi">
-        <h3>Total Revenue</h3>
-        <p>${{ total_revenue }}</p>
-    </div>
-    <div class="kpi">
-        <h3>Total Reservations</h3>
-        <p>{{ total_reservations }}</p>
-    </div>
-    <div class="kpi">
-        <h3>Available Cars</h3>
-        <p>{{ total_available_cars }}</p>
-    </div>
-    <div class="kpi">
-        <h3>Total Clients</h3>
-        <p>{{ total_clients }}</p>
-    </div>
+<div class="dashboard-container">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Financial Summary Table -->
+    <section class="dashboard-section">
+        <h2>Monthly Financial Summary</h2>
+        <table class="financial-table">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Total Revenue</th>
+                    <th>Total Expenditure</th>
+                    <th>Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in monthly_financial_data %}
+                <tr>
+                    <td>{{ item.month|date:"F Y" }}</td>
+                    <td>{{ item.revenue|floatformat:2 }} MAD</td>
+                    <td>{{ item.expenditure|floatformat:2 }} MAD</td>
+                    <td class="{% if item.profit < 0 %}negative{% else %}positive{% endif %}">
+                        {{ item.profit|floatformat:2 }} MAD
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">No financial data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 </div>
 
-<h2>Monthly Revenue (Last 6 Months)</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Month</th>
-            <th>Revenue</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in monthly_revenue %}
-        <tr>
-            <td>{{ entry.month|date:"F" }}</td>
-            <td>${{ entry.revenue|floatformat:2 }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- Custom Styles -->
+<style>
+    .dashboard-container {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+    }
+    .dashboard-section {
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background: #f9f9f9;
+    }
+    .dashboard-section h2 {
+        color: #333;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    .financial-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+    .financial-table th, .financial-table td {
+        text-align: left;
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    .financial-table th {
+        background-color: #f4f4f4;
+    }
+    .financial-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .financial-table tr:hover {
+        background-color: #f1f1f1;
+    }
+    .financial-table td.negative {
+        color: red;
+        font-weight: bold;
+    }
+    .financial-table td.positive {
+        color: green;
+        font-weight: bold;
+    }
+</style>
 
 {% endblock %}
 
