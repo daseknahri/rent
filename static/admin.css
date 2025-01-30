@@ -1,3 +1,6 @@
+#user-tools {
+    display: none !important;
+}
 div.app-auth.module {
     display: none; /* Hides the whole section */
 }

@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+    <ul>
+        {% for app in app_list %}
+            {% if app.app_label == app_label %}
+                {% for model in app.models %}
+                    <li>
+                        <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                    </li>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endblock %}

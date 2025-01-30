@@ -118,6 +118,10 @@ class Reservation(models.Model):
     total_paid = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)  # Tracks total payments made
     pdf_receipt = models.FileField(upload_to='reservations/pdfs/', blank=True, null=True)
 
+    @property
+    def rental_days(self):
+        return (self.end_date - self.start_date).days if self.start_date and self.end_date else 0
+
     def clean(self):
         if self.start_date < now().date():
             raise ValidationError("Reservation start date cannot be in the past.")

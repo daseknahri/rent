@@ -15,6 +15,8 @@ from django.utils.html import format_html
 from django import forms
 from django.contrib import admin
 from django.db import transaction
+from django.template.response import TemplateResponse
+from django.utils.translation import gettext
 
 
 @staff_member_required
@@ -65,13 +67,26 @@ class CustomAdminSite(admin.AdminSite):
         return custom_urls + urls
     
     def index(self, request, extra_context=None):
-        context = admin_dashboard(request)
-        extra_context = extra_context or {}
-        extra_context['custom_links'] = [
-            {'url': reverse('revenue_report'), 'name': 'Revenue Report'},
-        ]
-        context.update(extra_context)
+        context = super().each_context(request)
+        context.update(admin_dashboard(request))
+        if request.path == reverse('admin:index'):  # Check if it's the dashboard
+            extra_context = extra_context or {}
+            extra_context['custom_links'] = [
+                {'url': reverse('revenue_report'), 'name': 'Revenue Report'},
+            ]
+            
         return super().index(request, context)
+    def app_index(self, request, app_label, extra_context=None):
+        """Display the app index page, listing all models."""
+        app_list = self.get_app_list(request, app_label)
+        context = {
+            **self.each_context(request),
+            "title": gettext("%(app)s administration") % {"app": app_label},
+            "app_list": app_list,
+            "app_label": app_label,
+            **(extra_context or {}),
+        }
+        return TemplateResponse(request, self.app_index_template or "admin/app_index.html", context)
     
     def each_context(self, request):
         context = super().each_context(request)

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -72,5 +72,225 @@
     <div class="footer">
         <p>Generated on {{ now }}</p>
     </div>
+</body>
+</html>-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental Contract</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+        }
+
+        .container {
+            width: 190mm; /* Adjusted to fit within A4 with margins */
+            height: 277mm;
+            margin: 10mm auto; /* A4 page with consistent margins */
+            padding: 10mm;
+            border: 1px solid #000;
+            overflow: hidden;
+        }
+
+        /* Header Styling */
+        .header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 12px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 10px;
+        }
+        .section h3 {
+            font-size: 12px;
+            background: #ddd;
+            padding: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 5px;
+            font-size: 12px;
+            text-align: left;
+        }
+        th {
+            background: #f1f1f1;
+        }
+
+        /* Footer and Signature */
+        .signature {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .note {
+            margin-top: 10px;
+            font-size: 11px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Print Styling */
+        @media print {
+            .container {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 10mm;
+                border: none;
+            }
+            table, th, td {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Twins T.B CAR</h1>
+        <p>Location de Voiture</p>
+        <p><strong>Adresse :</strong> Hay El Mers Achennad 03 Rue 07 - TANGER</p>
+        <p><strong>Contact :</strong> 07 00 09 80 00 | 06 63 59 59 51</p>
+    </div>
+
+    <h2>CONTRAT DE LOCATION</h2>
+
+    <div class="section">
+        <h3>VÉHICULE</h3>
+        <table>
+            <tr>
+                <td>Marque :</td> <td>{{ reservation.car.name }}</td>
+            </tr>
+            <tr>
+                <td>N° Immatriculation :</td> <td>{{ reservation.car.plate_number }}</td>
+            </tr>
+            <tr>
+                <td>Lieu de Livraison :</td> <td>{{ reservation.client.address }}</td>
+            </tr>
+            <tr>
+                <td>Date de Registre :</td> <td>{{ reservation.client.address }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>LOCATAIRE</h3>
+        <table>
+            <tr>
+                <td>Nom & Prénom :</td> <td>{{ reservation.client.name }}</td>
+            </tr>
+            <tr>
+                <td>Num De Telephone :</td> <td>{{ reservation.client.phone_number }}</td>
+            </tr>
+            <tr>
+                <td>Adresse au Maroc :</td> <td>{{ reservation.client.address }}</td>
+            </tr>
+            <tr>
+                <td>Adresse à l'Étranger :</td> <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>LE CONDUCTEUR SUPPLÉMENTAIRE</h3>
+        {% if reservation.drivers.all %}
+        <table>
+            <tr>
+                <td>Nom & Prénom :</td>
+                <td>{{ reservation.drivers.all.0.name }}</td>
+            </tr>
+            <tr>
+                <td>phone number :</td> <td>{{ reservation.drivers.all.0.phone_number }}</td>
+            </tr>
+        </table>
+        {% else %}
+            <p>No DRIVER Assigned</p>
+        {% endif %}
+    </div>
+
+    <div class="section">
+        <h3>DURÉE & TARIFICATION</h3>
+        <table>
+            <tr>
+                <th>Date De Départ</th>
+                <th>Date de Retour</th>
+                <th>Durée</th>                
+            </tr>
+            <tr>
+                <td>{{ reservation.start_date }}</td>
+                <td>{{ reservation.end_date }}</td>
+                <td>{{ reservation.rental_days }} Jours</td>
+            </tr>
+            <tr>
+                <td><strong>Total Général</strong></td>
+                <td colspan="3">{{ reservation.total_cost }}DH</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>PAIEMENT</h3>
+        <table class="payment-section">
+            <tr>
+                <td>Espèces :</td> 
+                <td>{{ reservation.total_paid }}DH</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>Dommages Indentifiés et Acceptés</h3>
+        <p>Nombre : _____</p>
+        <p>Paraphe Client : _____</p>
+    </div>
+    <div class="section">
+        <h3 class="note">Observation : En cas d’accident ou de vol, je m’engage à régler la valeur totale de la voiture.</h3>
+    </div>
+
+    <div class="signature">
+        <p>Signature Client: ___________________________      Fait à {{ reservation.client.address }}, le {{ reservation.start_date }}</p>
+    </div>
+    
+</div>
+
 </body>
 </html>

@@ -1,7 +1,14 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 {% load i18n %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{% static 'admin.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'mobile.css' %}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+{% endblock %}
 {% block extrahead %}
+{{ block.super }}
 <script src="{% static 'mobile.js' %}"></script>
 {% endblock %}
 
@@ -16,7 +23,7 @@
                 {% if app.name == "Rent" %}
                     <li class="app-label" style="margin-top: 50px;">
                         <span onclick="toggleApp('{{ app.name }}')">{{ app.name }}</span>
-                        <ul id="app-{{ app.name }}" class="model-links">
+                        <ul id="app-{{ app.name }}" class="model-links" style="display: block;">
                             {% for model in app.models %}
                             <li>
                                 <a href="{{ model.admin_url }}">
@@ -32,9 +39,4 @@
     </div>
 
     {{ block.super }}
-{% endblock %}
-
-{% block extrastyle %}
-<link rel="stylesheet" type="text/css" href="{% static 'admin.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'mobile.css' %}">
 {% endblock %}
