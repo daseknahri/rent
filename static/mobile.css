@@ -74,6 +74,7 @@
     }
     /* Custom Sidebar Styling for Mobile */
     #custom-sidebar {
+        direction: rtl;  /* Default Left-to-Right */
         position: fixed;
         top: 0;
         left: 0;
@@ -84,6 +85,10 @@
         padding: 15px;
         z-index: 9999;
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+    [lang="ar"] #custom-sidebar {
+        direction: rtl;
+        right: auto; /* Reset default */
     }
 
     #custom-sidebar ul {

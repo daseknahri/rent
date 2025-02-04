@@ -1,0 +1,306 @@
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"  
+
+msgid "English"
+msgstr "إنجليزي"
+
+msgid "French"
+msgstr "فرنسية"
+
+msgid "Arabic"
+msgstr "عربية"
+
+msgid "Brand"
+msgstr "العلامة التجارية"
+msgid "Model"
+msgstr "الموديل"
+msgid "Registration Plate"
+msgstr "رقم اللوحة"
+msgid "Transmission"
+msgstr "ناقل الحركة"
+msgid "Fuel Type"
+msgstr "نوع الوقود"
+msgid "Image"
+msgstr "الصورة"
+msgid "Number of passengers"
+msgstr "عدد الركاب"
+msgid "Daily Rate"
+msgstr "السعر اليومي"
+msgid "%(app)s administration"
+msgstr "إدارة %(app)s"
+msgid "Total Expenditure"
+msgstr "إجمالي النفقات"
+msgid "Year"
+msgstr "سنة"
+msgid "Name"
+msgstr "الاسم"
+
+msgid "Tanger"
+msgstr "طنجة"
+
+msgid "Phone Number"
+msgstr "رقم الهاتف"
+
+msgid "Address"
+msgstr "العنوان"
+
+msgid "Total Amount Paid"
+msgstr "إجمالي المبلغ المدفوع"
+
+msgid "Total Amount Due"
+msgstr "إجمالي المبلغ المستحق"
+
+msgid "Identity Card Front"
+msgstr "واجهة بطاقة الهوية"
+
+msgid "Identity Card Back"
+msgstr "خلفية بطاقة الهوية"
+
+msgid "Driver License Front"
+msgstr "واجهة رخصة القيادة"
+msgid "Driver License Back"
+msgstr "خلفية رخصة القيادة"
+msgid "Passport Image"
+msgstr "صورة جواز السفر"
+
+msgid "Client Rating"
+msgstr "تقييم العميل"
+
+msgid "Rating of the client (1 to 5)"
+msgstr "تقييم العميل من 1 إلى 5"
+
+msgid "Enter a valid phone number."
+msgstr "أدخل رقم هاتف صالح."
+
+msgid "Gearbox Type"
+msgstr "نوع ناقل الحركة"
+
+msgid "Manual"
+msgstr "يدوي"
+
+msgid "Automatic"
+msgstr "أوتوماتيكي"
+
+msgid "Semi-Automatic"
+msgstr "شبه أوتوماتيكي"
+msgid "Petrol"
+msgstr "بنزين"
+msgid "Diesel"
+msgstr "ديزل"
+msgid "Electric"
+msgstr "كهربائي"
+msgid "Hybrid"
+msgstr "هجين"
+
+msgid "Car"
+msgstr "السيارة"
+
+msgid "Client"
+msgstr "الزبون"
+
+msgid "Clients"
+msgstr "الزبائن"
+
+msgid "Drivers"
+msgstr "السائقون"
+
+msgid "Start Date"
+msgstr "تاريخ البدء"
+
+msgid "End Date"
+msgstr "تاريخ الانتهاء"
+
+msgid "Total Cost"
+msgstr "التكلفة الإجمالية"
+
+msgid "Payment Status"
+msgstr "حالة الدفع"
+
+msgid "Paid"
+msgstr "مدفوع"
+
+msgid "Partially Paid"
+msgstr "مدفوع جزئياً"
+
+msgid "Unpaid"
+msgstr "غير مدفوع"
+
+msgid "Total Paid"
+msgstr "إجمالي المبلغ المدفوع"
+
+msgid "PDF Receipt"
+msgstr "إيصال PDF"
+
+msgid "Reservation start date cannot be in the past."
+msgstr "لا يمكن أن يكون تاريخ بدء الحجز في الماضي."
+
+msgid "This car is already reserved for the selected dates."
+msgstr "هذه السيارة محجوزة بالفعل للتواريخ المحددة."
+msgid "Reservation"
+msgstr "الحجز"
+
+msgid "Amount Paid"
+msgstr "المبلغ المدفوع"
+
+msgid "Payment Date"
+msgstr "تاريخ الدفع"
+
+msgid "Description"
+msgstr "الوصف"
+
+msgid "Cost"
+msgstr "التكلفة"
+
+msgid "Date"
+msgstr "التاريخ"
+msgid "Amount"
+msgstr "المبلغ"
+msgid "TWINS T.B CAR"
+msgstr "توينز تي بي للسيارات"
+
+msgid "Car Rental Management"
+msgstr "إدارة تأجير السيارات"
+
+msgid "Welcome to Administration"
+msgstr "مرحبًا في إدارة الحجوزات"
+
+msgid "Revenue Report"
+msgstr "تقرير الإيرادات"
+
+
+msgid "No Image"
+msgstr "لا توجد صورة"
+
+msgid "Identity Card"
+msgstr "بطاقة الهوية"
+msgid "Delete selected objects"
+msgstr "حذف العناصر المحددة"
+msgid "amount"
+msgstr "المبلغ"
+
+msgid "Reservation Details"
+msgstr "تفاصيل الحجز"
+
+msgid "Payment Information"
+msgstr "معلومات الدفع"
+
+msgid "Download Receipt"
+msgstr "تحميل الإيصال"
+
+msgid "No PDF Available"
+msgstr "لا يوجد ملف PDF"
+
+msgid "Payment Details"
+msgstr "تفاصيل الدفع"
+msgid "Expenditure Information"
+msgstr "معلومات النفقات"
+
+msgid "Driver"
+msgstr "سائق"
+
+msgid "Cars"
+msgstr "السيارات"
+
+msgid "Payment"
+msgstr "دفعة"
+
+msgid "Payments"
+msgstr "المدفوعات"
+
+msgid "Business Expenditure"
+msgstr "نفقة العمل"
+
+msgid "Business Expenditures"
+msgstr "نفقات العمل"
+
+msgid "Dashboard"
+msgstr "لوحة التحكم"
+
+msgid "Car Expenditure"
+msgstr "نفقات السيارة"
+
+msgid "Car Expenditures"
+msgstr "نفقات السيارات"
+
+msgid "Reservations"
+msgstr "الحجوزات"
+
+msgid "Car Information"
+msgstr "معلومات السيارة"
+
+msgid "Expenditure"
+msgstr "المصاريف"
+
+msgid "Client Information"
+msgstr "معلومات العميل"
+
+msgid "documents"
+msgstr "المستندات"
+
+msgid "Available"
+msgstr "متاح"
+msgid "Rented"
+msgstr "محجوز"
+
+msgid "Yes"
+msgstr "نعم"
+
+msgid "No"
+msgstr "لا"
+
+msgid "Expenditures Types"
+msgstr "أنواع النفقات"
+
+msgid "Expenditures Type"
+msgstr "نوع النفقات"
+
+msgid "Type"
+msgstr "النوع"
+msgid "Date of Birth"
+msgstr "تاريخ الميلاد"
+msgid "Date of birth"
+msgstr "تاريخ الميلاد"
+msgid "Driver's License Number"
+msgstr "رقم رخصة القيادة"
+
+msgid "Identity Card Number"
+msgstr "رقم بطاقة الهوية"
+msgid "Age"
+msgstr "العمر"
+
+msgid "Pickup Time"
+msgstr "وقت الاستلام"
+
+msgid "Dropoff Time"
+msgstr "وقت الإرجاع"
+
+msgid "Not Available"
+msgstr "غير متاح"
+
+msgid "Pending"
+msgstr "قيد الانتظار"
+
+msgid "In Progress"
+msgstr "قيد التنفيذ"
+
+msgid "Completed"
+msgstr "مكتمل"
+
+msgid "Status"
+msgstr "الحالة"
+
+msgid "Mark as Delivred"
+msgstr "تحديد كتم التسليم"
+
+msgid "%d The Vehicle Marked as Delivered."
+msgstr "%d مركبة تم تحديدها كمسلّمة."
+
+msgid "%d The Vehicle Marked as Returned"
+msgstr "%d مركبة تم تحديدها كمُرتجعة."
+
+msgid "Mark as Returned"
+msgstr "تحديد كتم الإرجاع"
+

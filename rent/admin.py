@@ -6,17 +6,20 @@ from django.urls import path
 from django.urls import reverse
 
 from django.contrib import admin
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin
+from django.utils.timezone import now
 
+from django.utils.translation import gettext_lazy as _, gettext, get_language
 from .views import admin_dashboard
-from .models import BusinessExpenditure, Car, Client, Reservation, CarExpenditure, Payment, Driver
+from .models import BusinessExpenditure, Car, Client, Reservation, CarExpenditure, Payment, Driver, ExpenditureType
 from django.utils.html import format_html
 from django import forms
 from django.contrib import admin
 from django.db import transaction
 from django.template.response import TemplateResponse
-from django.utils.translation import gettext
+from django.contrib.admin.widgets import AdminDateWidget
+
 
 
 @staff_member_required
@@ -43,11 +46,25 @@ class ClientAdminForm(forms.ModelForm):
     # Override the default widget for image fields
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['identity_card_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
-        self.fields['driver_license_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
-        self.fields['passport_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
 
-@admin.action(description="Delete selected objects")
+        self.fields['date_of_birth'].widget = forms.DateInput(attrs={'type': 'date'})
+
+        self.fields['identity_card_front'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['identity_card_back'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['driver_license_front'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['driver_license_back'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['passport_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = "__all__"
+        widgets = {
+            'pickup_time': forms.TimeInput(attrs={'type': 'time'}),  # Use HTML5 time input
+            'dropoff_time': forms.TimeInput(attrs={'type': 'time'}),  # Use HTML5 time input
+        }
+
+
+@admin.action(description=_("Delete selected objects"))
 def custom_delete_selected(modeladmin, request, queryset):
     with transaction.atomic():  # Ensure database integrity
         for obj in queryset:
@@ -55,9 +72,9 @@ def custom_delete_selected(modeladmin, request, queryset):
 
 class CustomAdminSite(admin.AdminSite):
     
-    site_header = "TWINS T.B CAR"
-    site_title = "Car Rental Management"
-    index_title = "Welcome to Rent Administration"
+    site_header = _("TWINS T.B CAR")
+    site_title = _("Car Rental Management")
+    index_title = _("Welcome to Administration")
     def get_urls(self):
         urls = super().get_urls()
         custom_urls = [
@@ -72,16 +89,40 @@ class CustomAdminSite(admin.AdminSite):
         if request.path == reverse('admin:index'):  # Check if it's the dashboard
             extra_context = extra_context or {}
             extra_context['custom_links'] = [
-                {'url': reverse('revenue_report'), 'name': 'Revenue Report'},
+                {'url': reverse('revenue_report'), 'name': _("Revenue Report")},
             ]
             
         return super().index(request, context)
+    def get_app_list(self, request, app_label=None):
+        app_list = super().get_app_list(request, app_label)
+
+        # 🔥 Define custom model order
+        custom_order = [
+            "Reservation",
+            "Car",
+            "Client",
+            "Payment",
+            "CarExpenditure",
+            "BusinessExpenditure",
+        ]
+        hidden_models = {"ExpenditureType", "Driver"}
+        for app in app_list:
+            app["models"] = [model for model in app["models"] if model["object_name"] not in hidden_models]
+
+        for app in app_list:
+            app["models"].sort(
+                key=lambda model: custom_order.index(model["object_name"])
+                if model["object_name"] in custom_order
+                else len(custom_order)
+            )
+
+        return app_list
     def app_index(self, request, app_label, extra_context=None):
         """Display the app index page, listing all models."""
         app_list = self.get_app_list(request, app_label)
         context = {
             **self.each_context(request),
-            "title": gettext("%(app)s administration") % {"app": app_label},
+            "title": _("Dashboard"),
             "app_list": app_list,
             "app_label": app_label,
             **(extra_context or {}),
@@ -98,7 +139,25 @@ admin_site = CustomAdminSite(name='custom_admin')
 
 @admin.register(Driver)
 class DriverAdmin(admin.ModelAdmin):
-    search_fields = ['name']
+   # class Media:
+    #    js = ('https://code.jquery.com/jquery-3.6.0.min.js', 'admin/js/custom_admin.js',)
+    form = ClientAdminForm
+    list_display = ('name', 'phone_number', 'show_identity_card')
+    search_fields = ('name', 'identity_card_number') 
+    actions = [custom_delete_selected]
+    fieldsets = (
+        (_('Driver Information'), {
+            'fields': ('name', 'phone_number', 'address', 'date_of_birth', 'identity_card_number', 'driver_license_number')
+        }),
+        (_('documents'), {
+            'fields': ('identity_card_front', 'identity_card_back', 'driver_license_front', 'driver_license_back', 'passport_image')
+        }),
+    )
+    def show_identity_card(self, obj):
+        if obj.identity_card_front:
+            return format_html('<img src="{}" width="50" height="50" />', obj.identity_card_front.url)
+        return _("No Image")
+    show_identity_card.short_description = _("Identity Card")
 
 ### INLINE FOR EXPENDITURES IN CARS ###
 class CarExpenditureInline(admin.TabularInline):
@@ -125,18 +184,18 @@ class ReservationInline(admin.TabularInline):
 ### CAR ADMIN ###
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ('name', 'plate_number', 'daily_rate', 'total_expenditure','is_available')
-    list_filter = ('daily_rate',)  # Filter by car brand and year
-    search_fields = ('plate_number', 'name')  # Search by plate number, brand, or model
+    list_display = ('brand', 'model', 'daily_rate', 'total_expenditure','is_available')
+    list_filter = ('daily_rate', 'is_available',)  # Filter by car brand and year
+    search_fields = ('plate_number', 'brand',)  # Search by plate number, brand, or model
     readonly_fields = ('total_expenditure',)  # Prevent editing total expenditure
  #   inlines = [CarExpenditureInline, ReservationInline]  # Add expenditures inline
     actions = [custom_delete_selected]
 
     fieldsets = (
-        ('Car Information', {
-            'fields': ('name', 'plate_number', 'year', 'image', 'daily_rate')
+        (_('Car Information'), {
+            'fields': ('brand', 'model', 'plate_number', 'year', 'image', 'daily_rate')
         }),
-        ('Expenditure', {
+        (_('Expenditure'), {
             'fields': ('total_expenditure',)
         }),
     )
@@ -151,29 +210,31 @@ class CarAdmin(admin.ModelAdmin):
 ### CLIENT ADMIN ###
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
+    class Media:
+        js = ('https://code.jquery.com/jquery-3.6.0.min.js', 'admin/js/custom_admin.js',)
     form = ClientAdminForm
-    list_display = ('name', 'phone_number', 'rating', 'total_amount_paid', 'total_amount_due', 'show_identity_card')
+    list_display = ('name', 'phone_number', 'rating', 'total_amount_paid', 'total_amount_due', 'age','show_identity_card')
     list_editable = ('rating',) 
-    search_fields = ('name', 'phone_number')  # Search by username, email, or phone
+    search_fields = ('name', 'identity_card_number')  # Search by username, email, or phone
     readonly_fields = ('total_amount_paid', 'total_amount_due')  # Prevent editing payment info
     list_filter = ('rating',)
     actions = [custom_delete_selected]
     fieldsets = (
-        ('Client Information', {
-            'fields': ('name', 'phone_number', 'address')
+        (_('Client Information'), {
+            'fields': ('name', 'phone_number', 'address', 'date_of_birth', 'identity_card_number', 'driver_license_number')
         }),
-        ('documents', {
-            'fields': ('identity_card_image', 'driver_license_image', 'passport_image')
+        (_('documents'), {
+            'fields': ('identity_card_front', 'identity_card_back', 'driver_license_front', 'driver_license_back', 'passport_image')
         }),
-        ('Payment Details', {
+        (_('Payment Details'), {
             'fields': ('total_amount_paid', 'total_amount_due')
         }),
     )
     def show_identity_card(self, obj):
-        if obj.identity_card_image:
-            return format_html('<img src="{}" width="50" height="50" />', obj.identity_card_image.url)
-        return "No Image"
-    show_identity_card.short_description = "Identity Card"
+        if obj.identity_card_front:
+            return format_html('<img src="{}" width="50" height="50" />', obj.identity_card_front.url)
+        return _("No Image")
+    show_identity_card.short_description = _("Identity Card")
 
     def get_actions(self, request):
         # Call the parent method to get all actions
@@ -187,7 +248,7 @@ class ClientAdmin(admin.ModelAdmin):
 ### INLINE FOR PAYMENTS IN RESERVATIONS ###
 class PaymentInline(admin.StackedInline):
     model = Payment
-    fields = ('amount',)
+    fields = ("amount",)
     extra = 1  # Allows admin to add payments directly in the reservation interface
 
 
@@ -195,40 +256,77 @@ class PaymentInline(admin.StackedInline):
 ### RESERVATION ADMIN ###
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'car', 'client', 'start_date', 'end_date', 'total_cost', 'total_paid', 'pdf_link')
+    form = ReservationForm
+    list_display = ('pk', 'car', 'client', 'start_date', 'end_date', 'total_cost', 'total_paid', 'status', 'pdf_link')
     autocomplete_fields = ['drivers']
-    list_filter = ('payment_status', 'start_date', 'end_date')  # Filter by payment status and rental period
-    search_fields = ('car__plate_number', 'client__name')  # Search by car or client
-    readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  # Prevent editing calculated fields
-    inlines = [PaymentInline]  # Add payments inline
-    actions = [custom_delete_selected]
+    list_filter = ('payment_status', 'start_date', 'end_date')  
+    search_fields = ('car__plate_number', 'client__name')  
+    readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  
+    inlines = [PaymentInline]  
+    actions = [custom_delete_selected, "mark_as_picked_up", "mark_as_returned"]
+    change_form_template = "admin/rent/reservation/change_form.html"
+
     fieldsets = (
-        ('Reservation Details', {
-            'fields': ('car', 'client', 'drivers', 'start_date', 'end_date')
+        (_("Reservation Details"), {  # Translated Section Title
+            'fields': ('car', 'client', 'drivers', 'start_date','pickup_time','end_date','dropoff_time')
         }),
-        ('Payment Information', {
+        (_("Payment Information"), {  # Translated Section Title
             'fields': ('total_paid', 'total_cost', 'payment_status')
         }),
     )
-    def pdf_link(self, obj):
-        """
-        Show a link to download the PDF in the admin interface.
-        """
-        if obj.pdf_receipt:
-            return format_html('<a href="/media/{}" target="_blank">Download Receipt</a>', obj.pdf_receipt)
-        return "No PDF Available"
 
-    pdf_link.short_description = "PDF Receipt"
+    class Media:
+        js = ('admin/js/calculate_total_cost.js',)
+    def mark_as_picked_up(self, request, queryset):
+        """ Admin action: Mark reservation as 'In Progress' and update pickup time. """
+        updated_count = 0
+        for reservation in queryset:
+            if reservation.status != "in_progress":
+                reservation.pickup_time = now().time()
+                reservation.status = "in_progress"
+                reservation.car.is_available = False
+                reservation.car.save(update_fields=['is_available'])
+                reservation.save()
+                updated_count += 1
+
+        self.message_user(request, _("%d The Vehicle Marked as Deliverd.") % updated_count)
+
+    mark_as_picked_up.short_description = _("Mark as Delivred")
+
+    def mark_as_returned(self, request, queryset):
+        """ Admin action: Mark reservation as 'Completed' and update dropoff time. """
+        updated_count = 0
+        for reservation in queryset:
+            if reservation.status != "completed":
+                reservation.dropoff_time = now().time()
+                reservation.status = "completed"
+                reservation.is_available = True
+                reservation.car.is_available = True
+                reservation.car.save(update_fields=['is_available'])
+                reservation.save()
+                updated_count += 1
+
+        self.message_user(request, _("%d The Vehicle Marked as Returned.") % updated_count)
+
+    mark_as_returned.short_description = _("Mark as Returned")
+
+
+    def pdf_link(self, obj):
+        """Show a link to download the PDF in the admin interface."""
+        if obj.pdf_receipt:
+            return format_html('<a href="/media/{}" target="_blank">{}</a>', obj.pdf_receipt, _("Download Receipt"))
+        return _("No PDF Available")
+
+    pdf_link.short_description = _("PDF Receipt")
+
     def save_model(self, request, obj, form, change):
-        """
-        Override save to generate the PDF when the reservation is created or updated.
-        """
+        """Override save to generate the PDF when the reservation is created or updated."""
         super().save_model(request, obj, form, change)
         obj.generate_pdf_receipt()
+
     def get_actions(self, request):
-        # Call the parent method to get all actions
+        """Override get_actions to remove default delete and use a custom delete action."""
         actions = super().get_actions(request)
-        # Remove the default delete action
         if 'delete_selected' in actions:
             del actions['delete_selected']
         return actions
@@ -244,7 +342,7 @@ class PaymentAdmin(admin.ModelAdmin):
     actions = [custom_delete_selected]
 
     fieldsets = (
-        ('Payment Details', {
+        (_('Payment Details'), {
             'fields': ('reservation', 'amount', 'payment_date')
         }),
     )
@@ -267,7 +365,7 @@ class CarExpenditureAdmin(admin.ModelAdmin):
     actions = [custom_delete_selected]
 
     fieldsets = (
-        ('Expenditure Information', {
+        (_('Expenditure Information'), {
             'fields': ('car', 'description', 'cost', 'date')
         }),
     )
@@ -281,12 +379,11 @@ class CarExpenditureAdmin(admin.ModelAdmin):
 
 @admin.register(BusinessExpenditure)
 class BusinessExpenditureAdmin(admin.ModelAdmin):
-    list_display = ('description', 'amount', 'date')
-    list_filter = ('date',)
-    search_fields = ('description',)
+    list_display = ('type', 'amount', 'date')
+    list_filter = ('type',)
+    search_fields = ('type',"date")
 
 admin_site.register(User, UserAdmin)
-#admin_site.register(Group)
 admin_site.register(Car, CarAdmin)
 admin_site.register(Client, ClientAdmin)
 admin_site.register(Reservation, ReservationAdmin)
@@ -294,3 +391,4 @@ admin_site.register(Payment, PaymentAdmin)
 admin_site.register(CarExpenditure, CarExpenditureAdmin)
 admin_site.register(Driver, DriverAdmin)
 admin_site.register(BusinessExpenditure, BusinessExpenditureAdmin)
+admin_site.register(ExpenditureType)

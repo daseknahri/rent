@@ -12,10 +12,28 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+from django.utils.translation import gettext_lazy as _
+
+USE_I18N = True  # Enable translations
+USE_L10N = True  # Format numbers, dates, etc., based on the language
+USE_TZ = True    # Use timezone-aware datetime
+
+# Default language
+LANGUAGE_CODE = 'ar'
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('French')),
+    ('ar', _('Arabic')),
+]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Where translation files will be stored
+LOCALE_PATHS = [
+    BASE_DIR / 'locale/',  # Django will store translations here
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -43,6 +61,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -76,11 +95,21 @@ WSGI_APPLICATION = 'simp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}'''
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'new',  # Replace with your database name
+        'USER': 'badr',  # Replace with your database username
+        'PASSWORD': 'badr222',   # Replace with your database password
+        'HOST': 'localhost',           # Database host (e.g., localhost)
+        'PORT': '5432',                # Default PostgreSQL port
     }
 }
 
@@ -107,13 +136,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Casablanca'
 
-USE_I18N = True
 
-USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

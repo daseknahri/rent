@@ -1,0 +1,315 @@
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fr\n"  
+
+
+
+msgid "English"
+msgstr "Englais"
+
+msgid "French"
+msgstr "francais"
+
+msgid "Arabic"
+msgstr "Arab"
+
+msgid "Tanger"
+msgstr "Tanger"
+
+msgid "Brand"
+msgstr "Marque"
+
+msgid "Model"
+msgstr "Modèle"
+
+msgid "%(app)s administration"
+msgstr "Administration de %(app)s"
+
+msgid "Registration Plate"
+msgstr "Plaque d’immatriculation"
+
+msgid "Transmission"
+msgstr "Boîte de vitesses"
+
+msgid "Fuel Type"
+msgstr "Type de carburant"
+
+msgid "Image"
+msgstr "Photo"
+
+msgid "Number of passengers"
+msgstr "Nombre de passagers"
+
+msgid "Daily Rate"
+msgstr "Tarif journalier"
+
+msgid "Total Expenditure"
+msgstr "Total des dépenses"
+
+msgid "Year"
+msgstr "Année"
+
+msgid "Manual"
+msgstr "Manuelle"
+
+msgid "Automatic"
+msgstr "Automatique"
+
+msgid "Semi-Automatic"
+msgstr "Semi-Automatique"
+
+msgid "Petrol"
+msgstr "Essence"
+
+msgid "Diesel"
+msgstr "Diesel"
+
+msgid "Electric"
+msgstr "Électrique"
+
+msgid "Hybrid"
+msgstr "Hybride"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Phone Number"
+msgstr "Numéro de téléphone"
+
+msgid "Address"
+msgstr "Adresse"
+
+msgid "Total Amount Paid"
+msgstr "Montant total payé"
+
+msgid "Total Amount Due"
+msgstr "Montant total dû"
+
+msgid "Client Rating"
+msgstr "Évaluation du client"
+
+msgid "Rating of the client (1 to 5)"
+msgstr "Évaluation du client (1 à 5)"
+
+msgid "Identity Card Image"
+msgstr "Image de la carte d'identité"
+
+msgid "Driver License Image"
+msgstr "Image du permis de conduire"
+
+msgid "Passport Image"
+msgstr "Image du passeport"
+
+msgid "Car"
+msgstr "Voiture"
+
+msgid "Client"
+msgstr "Client"
+
+msgid "Clients"
+msgstr "Clients"
+
+msgid "Drivers"
+msgstr "Chauffeurs"
+
+msgid "Start Date"
+msgstr "Date de début"
+
+msgid "End Date"
+msgstr "Date de fin"
+
+msgid "Total Cost"
+msgstr "Coût total"
+
+msgid "Payment Status"
+msgstr "Statut du paiement"
+
+msgid "Paid"
+msgstr "Payé"
+
+msgid "Partially Paid"
+msgstr "Partiellement payé"
+
+msgid "Unpaid"
+msgstr "Non payé"
+
+msgid "Total Paid"
+msgstr "Total payé"
+
+msgid "PDF Receipt"
+msgstr "Reçu PDF"
+
+
+msgid "This car is already reserved for the selected dates."
+msgstr "Cette voiture est déjà réservée pour les dates sélectionnées."
+msgid "Reservation"
+msgstr "Réservation"
+msgid "Reservations"
+msgstr "Réservations"
+msgid "Amount Paid"
+msgstr "Montant payé"
+
+msgid "Payment Date"
+msgstr "Date de paiement"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Cost"
+msgstr "Coût"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Amount"
+msgstr "Montant"
+msgid "TWINS T.B CAR"
+msgstr "TWINS T.B VOITURE"
+
+msgid "Car Rental Management"
+msgstr "Gestion de location de voitures"
+
+msgid "Welcome to Administration"
+msgstr "Bienvenue dans l'administration"
+
+msgid "Revenue Report"
+msgstr "Rapport des revenus"
+msgid "No Image"
+msgstr "Aucune image"
+
+msgid "Identity Card"
+msgstr "Carte d'identité"
+msgid "Delete selected objects"
+msgstr "Supprimer les objets sélectionnés"
+msgid "amount"
+msgstr "Montant"
+
+msgid "Reservation Details"
+msgstr "Détails de la réservation"
+
+msgid "Payment Information"
+msgstr "Informations de paiement"
+
+
+
+msgid "Download Receipt"
+msgstr "Télécharger le reçu"
+
+msgid "No PDF Available"
+msgstr "Aucun PDF disponible"
+
+msgid "Payment Details"
+msgstr "Détails du paiement "
+msgid "Expenditure Information"
+msgstr "Informations sur les dépenses"
+
+msgid "Driver"
+msgstr "Chauffeur"
+
+msgid "Cars"
+msgstr "Voitures"
+
+
+msgid "Car Expenditure"
+msgstr "Dépense liée à la voiture"
+
+msgid "Car Expenditures"
+msgstr "Dépenses liées aux voitures"
+
+msgid "Payment"
+msgstr "Paiement"
+
+msgid "Payments"
+msgstr "Paiements"
+
+msgid "Business Expenditure"
+msgstr "Dépense de l'entreprise"
+
+msgid "Business Expenditures"
+msgstr "Dépenses de l'entreprise"
+
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Car Information"
+msgstr "Information De Voiture"
+
+msgid "Expenditure"
+msgstr "Dépense"
+
+msgid "Client Information"
+msgstr "Informations du client"
+
+msgid "documents"
+msgstr "Documents"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "Expenditure Type"
+msgstr "Type de dépense"
+
+msgid "Expenditure Types"
+msgstr "Types de dépenses"
+
+msgid "Type"
+msgstr "Type"
+msgid "Date of Birth"
+msgstr "Date de naissance"
+msgid "Date of birth"
+msgstr "Date de naissance"
+
+msgid "Driver's License Number"
+msgstr "Numéro du permis de conduire"
+
+msgid "Identity Card Number"
+msgstr "Numéro de la carte d'identité"
+msgid "Age"
+msgstr "Âge"
+
+msgid "Pickup Time"
+msgstr "Heure de prise en charge"
+
+msgid "Dropoff Time"
+msgstr "Heure de retour"
+
+msgid "Not Available"
+msgstr "Non disponible"
+
+msgid "Pending"
+msgstr "En attente"
+
+msgid "In Progress"
+msgstr "En cours"
+
+msgid "Completed"
+msgstr "Terminé"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Reservation start date cannot be in the past unless it is marked as completed."
+msgstr "La date de début de la réservation ne peut pas être dans le passé, sauf si elle est marquée comme terminée."
+
+msgid "End date cannot be before the start date."
+msgstr "La date de fin ne peut pas être antérieure à la date de début."
+
+msgid "Mark as Delivered"
+msgstr "Marquer comme livré"
+
+msgid "%d The Vehicle Marked as Delivered."
+msgstr "%d véhicule marqué comme livré."
+
+msgid "%d The Vehicle Marked as Returned"
+msgstr "%d véhicule marqué comme retourné."
+
+msgid "Mark as Returned"
+msgstr "Marquer comme retourné"
