@@ -296,20 +296,20 @@ msgstr "Terminé"
 msgid "Status"
 msgstr "Statut"
 
-msgid "Reservation start date cannot be in the past unless it is marked as completed."
-msgstr "La date de début de la réservation ne peut pas être dans le passé, sauf si elle est marquée comme terminée."
+msgid "Reservation start date cannot be in the past unless it is marked as completed"
+msgstr "La date de début de la réservation ne peut pas être dans le passé, sauf si elle est marquée comme terminée"
 
-msgid "End date cannot be before the start date."
-msgstr "La date de fin ne peut pas être antérieure à la date de début."
+msgid "End date cannot be before the start date"
+msgstr "La date de fin ne peut pas être antérieure à la date de début"
 
 msgid "Mark as Delivered"
 msgstr "Marquer comme livré"
 
-msgid "%d The Vehicle Marked as Delivered."
-msgstr "%d véhicule marqué comme livré."
+msgid "The Vehicle Marked as Delivered"
+msgstr "véhicule marqué comme livré"
 
-msgid "%d The Vehicle Marked as Returned"
-msgstr "%d véhicule marqué comme retourné."
+msgid "The Vehicle Marked as Returned"
+msgstr "véhicule marqué comme retourné"
 
 msgid "Mark as Returned"
 msgstr "Marquer comme retourné"

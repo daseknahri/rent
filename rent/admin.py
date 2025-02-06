@@ -18,7 +18,7 @@ from django import forms
 from django.contrib import admin
 from django.db import transaction
 from django.template.response import TemplateResponse
-from django.contrib.admin.widgets import AdminDateWidget
+from django.http import JsonResponse
 
 
 
@@ -268,7 +268,7 @@ class ReservationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (_("Reservation Details"), {  # Translated Section Title
-            'fields': ('car', 'client', 'drivers', 'start_date','pickup_time','end_date','dropoff_time')
+            'fields': ('car', 'client', 'drivers', 'start_date','end_date')
         }),
         (_("Payment Information"), {  # Translated Section Title
             'fields': ('total_paid', 'total_cost', 'payment_status')
@@ -279,7 +279,6 @@ class ReservationAdmin(admin.ModelAdmin):
         js = ('admin/js/calculate_total_cost.js',)
     def mark_as_picked_up(self, request, queryset):
         """ Admin action: Mark reservation as 'In Progress' and update pickup time. """
-        updated_count = 0
         for reservation in queryset:
             if reservation.status != "in_progress":
                 reservation.pickup_time = now().time()
@@ -287,15 +286,13 @@ class ReservationAdmin(admin.ModelAdmin):
                 reservation.car.is_available = False
                 reservation.car.save(update_fields=['is_available'])
                 reservation.save()
-                updated_count += 1
 
-        self.message_user(request, _("%d The Vehicle Marked as Deliverd.") % updated_count)
+        self.message_user(request, _("The Vehicle Marked as Deliverd."))
 
     mark_as_picked_up.short_description = _("Mark as Delivred")
 
     def mark_as_returned(self, request, queryset):
         """ Admin action: Mark reservation as 'Completed' and update dropoff time. """
-        updated_count = 0
         for reservation in queryset:
             if reservation.status != "completed":
                 reservation.dropoff_time = now().time()
@@ -304,9 +301,10 @@ class ReservationAdmin(admin.ModelAdmin):
                 reservation.car.is_available = True
                 reservation.car.save(update_fields=['is_available'])
                 reservation.save()
-                updated_count += 1
-
-        self.message_user(request, _("%d The Vehicle Marked as Returned.") % updated_count)
+        self.message_user(request, _("The Vehicle Marked as Returned."))
+        return JsonResponse({
+            'show_popup': True
+        })
 
     mark_as_returned.short_description = _("Mark as Returned")
 

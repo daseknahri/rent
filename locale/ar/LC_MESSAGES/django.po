@@ -295,11 +295,11 @@ msgstr "الحالة"
 msgid "Mark as Delivred"
 msgstr "تحديد كتم التسليم"
 
-msgid "%d The Vehicle Marked as Delivered."
-msgstr "%d مركبة تم تحديدها كمسلّمة."
+msgid "The Vehicle Marked as Delivered."
+msgstr "مركبة تم تحديدها كمسلّمة."
 
-msgid "%d The Vehicle Marked as Returned"
-msgstr "%d مركبة تم تحديدها كمُرتجعة."
+msgid "The Vehicle Marked as Returned"
+msgstr "مركبة تم تحديدها كمُرتجعة."
 
 msgid "Mark as Returned"
 msgstr "تحديد كتم الإرجاع"

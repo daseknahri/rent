@@ -1,5 +1,5 @@
 
-from datetime import date, time
+from datetime import date, time, timedelta
 from django.db import models
 from django.forms import ValidationError
 from django.utils.timezone import now
@@ -267,9 +267,9 @@ class Reservation(models.Model):
         # 🔥 3. Check for overlapping reservations
         overlapping_reservations = Reservation.objects.filter(
             car=self.car,
-            end_date__gte=self.start_date,  # Existing reservation ends after new start date
-            start_date__lte=self.end_date,  # Existing reservation starts before new end date
-        )
+            end_date__gt=self.start_date,  # 🔥 Fixed: Allow starting **on** the same day another reservation ends
+            start_date__lt=self.end_date,  # 🔥 Fixed: Allow ending **on** the same day another reservation starts
+        ) 
 
         if self.pk:  # Exclude the current instance if it's being updated
             overlapping_reservations = overlapping_reservations.exclude(pk=self.pk)
@@ -279,7 +279,8 @@ class Reservation(models.Model):
 
         # 🔥 4. Auto-update status for today's reservations
         if self.start_date == today:
-            self.status = "in_progress"  # Automatically set to "In Progress" if starting today
+            self.status = "in_progress"
+            self.car.is_available = False
 
         super().clean()
 
@@ -336,10 +337,10 @@ class Reservation(models.Model):
 
         # Check if this is the first save (before generating PDF)
         print(self.start_date == now().date())
-        if self.start_date == now().date():
+        if self.start_date == now().date() and not old_instance:
             self.status = "in_progress"
+            self.pickup_time = now().time()
             self.car.is_available = False
-            print(self.car.is_available)
             self.car.save(update_fields=['is_available'])
         super().save(*args, **kwargs)
         self.client.update_payment_info()

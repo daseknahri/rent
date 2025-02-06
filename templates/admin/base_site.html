@@ -7,36 +7,38 @@
 {% endblock %}
 
 {% block nav-sidebar %}
-    <!-- Sidebar Toggle Button -->
-    <button class="custom-sidebar-toggle" onclick="toggleCustomSidebar()">☰</button>
-    <!-- Custom Sidebar -->
-    <div id="custom-sidebar" style="display: none;">
-        <ul>
-            {% for app in app_list %}
-                {% if app.name == _("Dashboard") %}
-                    <li class="app-label" style="margin-top: 50px;">
-                        <span onclick="toggleApp('{{ app.name }}')">{{ app.name }}</span>
-                        <ul id="app-{{ app.name }}" class="model-links" style="display: block;">
-                            {% for model in app.models %}
-                            <li>
-                                <a href="{{ model.admin_url }}">
-                                    <i class="fa fa-database"></i> {{ model.name }}
-                                </a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+    <div id="custom-sidebar-div">
+        <!-- Sidebar Toggle Button -->
+        <button class="custom-sidebar-toggle" onclick="toggleCustomSidebar()">☰</button>
+        <!-- Custom Sidebar -->
+        <div id="custom-sidebar" style="display: none;">
+            <ul>
+                {% for app in app_list %}
+                    {% if app.name == _("Dashboard") %}
+                        <li class="app-label" style="margin-top: 50px;">
+                            <span onclick="toggleApp('{{ app.name }}')">{{ app.name }}</span>
+                            <ul id="app-{{ app.name }}" class="model-links" style="display: block;">
+                                {% for model in app.models %}
+                                <li>
+                                    <a href="{{ model.admin_url }}">
+                                        <i class="fa fa-database"></i> {{ model.name }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-
     {{ block.super }}
 {% endblock %}
 
 {% block usertools %}
-    {{ block.super }}  <!-- Keep Django's default user tools -->
-
+    <div id="too">
+        {{ block.super }}  <!-- Keep Django's default user tools -->
+    </div>
     <!-- Language Switcher Form -->
     <form action="{% url 'set_language' %}" method="post" style="display: inline;">
         {% csrf_token %}
