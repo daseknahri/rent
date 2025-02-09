@@ -304,3 +304,44 @@ msgstr "مركبة تم تحديدها كمُرتجعة."
 msgid "Mark as Returned"
 msgstr "تحديد كتم الإرجاع"
 
+msgid "Admin Dashboard"
+msgstr "لوحة التحكم"
+
+msgid "Total Reservations"
+msgstr "إجمالي الحجوزات"
+
+msgid "Available Cars"
+msgstr "السيارات المتاحة"
+
+msgid "Monthly Financial Summary"
+msgstr "الملخص المالي الشهري"
+
+msgid "Month"
+msgstr "الشهر"
+
+msgid "Total Revenue"
+msgstr "الإيرادات الإجمالية"
+
+
+msgid "Profit"
+msgstr "الربح"
+
+msgid "No financial data available."
+msgstr "لا توجد بيانات مالية متاحة."
+
+msgid "Profit and Expenses by Car"
+msgstr "الربح والنفقات حسب السيارة"
+
+msgid "Total Expense"
+msgstr "إجمالي النفقات"
+
+msgid "Clients with Balance Due"
+msgstr "العملاء الذين لديهم رصيد مستحق"
+
+msgid "Total Due"
+msgstr "إجمالي المستحقات"
+
+msgid "No clients with due amounts."
+msgstr "لا يوجد عملاء لديهم مبالغ مستحقة."
+
+

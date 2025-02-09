@@ -313,3 +313,43 @@ msgstr "véhicule marqué comme retourné"
 
 msgid "Mark as Returned"
 msgstr "Marquer comme retourné"
+
+msgid "Admin Dashboard"
+msgstr "Tableau de bord"
+
+msgid "Total Reservations"
+msgstr "Total des réservations"
+
+msgid "Available Cars"
+msgstr "Voitures disponibles"
+
+msgid "Monthly Financial Summary"
+msgstr "Résumé financier mensuel"
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Total Revenue"
+msgstr "Revenu total"
+
+msgid "Profit"
+msgstr "Profit"
+
+msgid "No financial data available."
+msgstr "Aucune donnée financière disponible."
+
+msgid "Profit and Expenses by Car"
+msgstr "Bénéfices et dépenses par voiture"
+
+msgid "Total Expense"
+msgstr "Dépenses totales"
+
+msgid "Clients with Balance Due"
+msgstr "Clients ayant un solde dû"
+
+
+msgid "Total Due"
+msgstr "Montant dû"
+
+msgid "No clients with due amounts."
+msgstr "Aucun client avec un solde dû."
