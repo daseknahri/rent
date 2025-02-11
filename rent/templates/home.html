@@ -151,11 +151,17 @@
     <section>
         <div class="order-form">
             <h2>اطلب الآن</h2>
-            <form id="orderForm">
-                <input type="text" id="name" placeholder="الاسم الكامل" required>
-                <input type="text" id="city" placeholder="المدينة" required>
-                <input type="tel" id="phone" placeholder="رقم الهاتف" required>
-                <button type="submit">إرسال الطلب عبر واتساب</button>
+            <form id="orderForm" method="POST" action="{% url 'register' %}">
+                {% csrf_token %}
+                <input type="text" id="name" name="name" placeholder="الاسم الكامل" required>
+                <input type="text" id="city" name="city" placeholder="المدينة" required>
+                <input type="tel" id="phone" name="phone" placeholder="رقم الهاتف" required>
+
+                <!-- WhatsApp Button -->
+                <button type="button" onclick="sendToWhatsApp()">تواصل عبر واتساب</button>
+
+                <!-- Register Button -->
+                <button type="submit">تسجيل المعلومات</button>
             </form>
         </div>
     </section>
@@ -184,23 +190,20 @@
             };
 
             // Form submission to WhatsApp
-            document.getElementById("orderForm").addEventListener("submit", function(event) {
-                event.preventDefault();  // Prevent form submission
-
-                // Collecting form values
+            function sendToWhatsApp() {
                 const name = document.getElementById("name").value;
                 const city = document.getElementById("city").value;
                 const phone = document.getElementById("phone").value;
 
-                // Formatting the message
-                const whatsappMessage = `مرحبًا، أود طلب مجوهرات:\nالاسم: ${name}\nالمدينة: ${city}\nرقم الهاتف: ${phone}`;
+                if (name && city && phone) {  // Basic validation
+                    const message = `مرحبًا، أود طلب مجوهرات:\nالاسم: ${name}\nالمدينة: ${city}\nرقم الهاتف: ${phone}`;
+                    const whatsappURL = `https://wa.me/0618201196?text=${encodeURIComponent(message)}`;
 
-                // WhatsApp API link (replace YOUR_NUMBER with your actual WhatsApp number including country code)
-                const whatsappURL = `https://wa.me/0618201196?text=${encodeURIComponent(whatsappMessage)}`;
-
-                // Open WhatsApp chat with the formatted message
-                window.open(whatsappURL, "_blank");
-            });
+                    window.open(whatsappURL, "_blank");
+                } else {
+                    alert("يرجى ملء جميع الحقول قبل المتابعة.");
+                }
+            }
         });
     </script>
 

@@ -1,15 +1,33 @@
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Sum, Count, F, Q
 from django.utils.timezone import now
 from datetime import timedelta
 from django.db.models.functions import TruncMonth
-from .models import Car, Reservation, Client, Payment, BusinessExpenditure, CarExpenditure
+
+from rent.helper import calculate_rental_days_for_months
+from .models import Car, Reservation, Client, Payment, BusinessExpenditure, CarExpenditure, CustomerInfo
 from django.http import JsonResponse
 from django.utils.translation import get_language
 
-def test(request):
-    return render(request, 'test.html')
+
+def thank_you(request):
+    return render(request, 'thank_you.html')
+
+
+def register(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        city = request.POST.get('city')
+        phone = request.POST.get('phone')
+
+        # Save data to the database
+        CustomerInfo.objects.create(name=name, city=city, phone=phone)
+
+        # Redirect to thank you page
+        return redirect('thank_you')
+
+    return render(request, 'home.html')
 
 def home(request):
     cars = Car.objects.all()
@@ -75,16 +93,45 @@ def admin_dashboard(request):
 
     # Clients with balance due
     clients_with_due = Client.objects.filter(total_amount_due__gt=0)
-    lang_code = get_language()  # Gets the current language code ('en', 'ar', etc.)
+
+    # Car rental days for each month
+    car_rental_days_data = []
+    for car in Car.objects.all():
+        rental_days_by_month = {}
+        for reservation in car.reservations.all():
+            start_date = reservation.start_date
+            end_date = reservation.end_date
+
+            # Split reservation into months
+            while start_date <= end_date:
+                month = start_date.replace(day=1)
+                if month not in rental_days_by_month:
+                    rental_days_by_month[month] = 0
+
+                # Calculate days in the current month of the reservation
+                days_in_month = min(end_date, month.replace(day=28) + timedelta(days=4)) - start_date
+                rental_days_by_month[month] += days_in_month.days
+
+                # Move to next month
+                start_date = (month + timedelta(days=32)).replace(day=1)
+
+        # Append data
+        car_rental_days_data.append({
+            'car': car,
+            'rental_days_by_month': rental_days_by_month,
+        })
+
     context = {
         'monthly_financial_data': monthly_financial_data,
         'total_reservations': total_reservations,
         'available_cars': available_cars,
         'car_profit_data': car_profit_data,
         'clients_with_due': clients_with_due,
-        'lang_code': lang_code
+        'car_rental_days_data': car_rental_days_data,
+        'lang_code': get_language()
     }
     return context
+
 
 
 def get_car_daily_rate(request):

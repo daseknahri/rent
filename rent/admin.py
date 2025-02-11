@@ -38,6 +38,22 @@ def revenue_report(request):
         .order_by('month')
     )
     return render(request, 'admin/revenue_report.html', {'data': data})
+class DriverAdminForm(forms.ModelForm):
+    class Meta:
+        model = Driver
+        fields = '__all__'
+
+    # Override the default widget for image fields
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['date_of_birth'].widget = forms.DateInput(attrs={'type': 'date'})
+
+        self.fields['identity_card_front'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['identity_card_back'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['driver_license_front'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['driver_license_back'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        self.fields['passport_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
 class ClientAdminForm(forms.ModelForm):
     class Meta:
         model = Client
@@ -54,6 +70,13 @@ class ClientAdminForm(forms.ModelForm):
         self.fields['driver_license_front'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
         self.fields['driver_license_back'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
         self.fields['passport_image'].widget.attrs.update({'capture': 'camera', 'accept': 'image/*'})
+        if not self.instance.pk:
+                self.fields['total_amount_paid'].widget = forms.HiddenInput()
+                self.fields['total_amount_due'].widget = forms.HiddenInput()
+        else:
+                self.fields['total_amount_paid'].widget.attrs['readonly'] = True
+                self.fields['total_amount_due'].widget.attrs['readonly'] = True
+
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
@@ -62,6 +85,19 @@ class ReservationForm(forms.ModelForm):
             'pickup_time': forms.TimeInput(attrs={'type': 'time'}),  # Use HTML5 time input
             'dropoff_time': forms.TimeInput(attrs={'type': 'time'}),  # Use HTML5 time input
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+                self.fields['pickup_time'].widget = forms.HiddenInput()
+                self.fields['dropoff_time'].widget = forms.HiddenInput()
+                self.fields['total_paid'].widget = forms.HiddenInput()
+                self.fields['payment_status'].widget = forms.HiddenInput()
+                self.fields['total_cost'].widget.attrs['readonly'] = True
+
+        else:
+            # If it's an existing object (editing), you can modify the form
+            self.fields['total_paid'].widget.attrs['readonly'] = True
+            self.fields['payment_status'].widget.attrs['readonly'] = True
 
 
 @admin.action(description=_("Delete selected objects"))
@@ -141,7 +177,7 @@ admin_site = CustomAdminSite(name='custom_admin')
 class DriverAdmin(admin.ModelAdmin):
    # class Media:
     #    js = ('https://code.jquery.com/jquery-3.6.0.min.js', 'admin/js/custom_admin.js',)
-    form = ClientAdminForm
+    form = DriverAdminForm
     list_display = ('name', 'phone_number', 'show_identity_card')
     search_fields = ('name', 'identity_card_number') 
     actions = [custom_delete_selected]
@@ -216,7 +252,6 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = ('name', 'phone_number', 'rating', 'total_amount_paid', 'total_amount_due', 'age','show_identity_card')
     list_editable = ('rating',) 
     search_fields = ('name', 'identity_card_number')  # Search by username, email, or phone
-    readonly_fields = ('total_amount_paid', 'total_amount_due')  # Prevent editing payment info
     list_filter = ('rating',)
     actions = [custom_delete_selected]
     fieldsets = (
@@ -261,14 +296,14 @@ class ReservationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['drivers']
     list_filter = ('payment_status', 'start_date', 'end_date')  
     search_fields = ('car__plate_number', 'client__name')  
-    readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  
+    #readonly_fields = ('total_cost', 'payment_status', 'total_paid', 'pdf_link')  
     inlines = [PaymentInline]  
     actions = [custom_delete_selected, "mark_as_picked_up", "mark_as_returned"]
     change_form_template = "admin/rent/reservation/change_form.html"
 
     fieldsets = (
         (_("Reservation Details"), {  # Translated Section Title
-            'fields': ('car', 'client', 'drivers', 'actual_daily_rate', 'start_date','end_date')
+            'fields': ('car', 'client', 'drivers', 'actual_daily_rate', 'pickup_time', 'start_date','end_date', 'dropoff_time')
         }),
         (_("Payment Information"), {  # Translated Section Title
             'fields': ('total_paid', 'total_cost', 'payment_status')

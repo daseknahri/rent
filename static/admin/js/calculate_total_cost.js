@@ -59,7 +59,7 @@
 
                 console.log(`Total Cost: ${rentalDays} days × ${actualDailyRate} = ${totalCost}`);
 
-                totalCostField.text(totalCost.toFixed(2)); // ✅ Set the total cost in the field
+                totalCostField.val(totalCost.toFixed(2)); // ✅ Set the total cost in the field
 
             }
 
