@@ -268,7 +268,7 @@ class ReservationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (_("Reservation Details"), {  # Translated Section Title
-            'fields': ('car', 'client', 'drivers', 'start_date','end_date')
+            'fields': ('car', 'client', 'drivers', 'actual_daily_rate', 'start_date','end_date')
         }),
         (_("Payment Information"), {  # Translated Section Title
             'fields': ('total_paid', 'total_cost', 'payment_status')

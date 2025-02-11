@@ -344,4 +344,7 @@ msgstr "إجمالي المستحقات"
 msgid "No clients with due amounts."
 msgstr "لا يوجد عملاء لديهم مبالغ مستحقة."
 
+msgid "Actual Daily Rate"
+msgstr "السعر اليومي الفعلي"
+
 

@@ -8,64 +8,12 @@ from .models import Car, Reservation, Client, Payment, BusinessExpenditure, CarE
 from django.http import JsonResponse
 from django.utils.translation import get_language
 
+def test(request):
+    return render(request, 'test.html')
 
 def home(request):
     cars = Car.objects.all()
     return render(request, 'home.html', {'cars': cars})
-
-@staff_member_required
-def admin_dashboard(request):
-    # Get current date for reusable calculations
-    current_date = now().date()
-
-    # Monthly revenue
-    monthly_revenue_data = Payment.objects.annotate(month=TruncMonth('payment_date')) \
-        .values('month') \
-        .annotate(total_revenue=Sum('amount')) \
-        .order_by('month')
-
-    # Monthly car expenditures
-    monthly_car_expenditure_data = CarExpenditure.objects.annotate(month=TruncMonth('date')) \
-        .values('month') \
-        .annotate(total_expenditure=Sum('cost'))
-
-    # Monthly business expenditures
-    monthly_business_expenditure_data = BusinessExpenditure.objects.annotate(month=TruncMonth('date')) \
-        .values('month') \
-        .annotate(total_expenditure=Sum('amount'))
-
-    # Combine expenditures
-    monthly_expenditure_data = {}
-    for item in monthly_car_expenditure_data:
-        month = item['month']
-        monthly_expenditure_data[month] = monthly_expenditure_data.get(month, 0) + item['total_expenditure']
-    for item in monthly_business_expenditure_data:
-        month = item['month']
-        monthly_expenditure_data[month] = monthly_expenditure_data.get(month, 0) + item['total_expenditure']
-
-    # Merge revenue and expenditure into a single list with profit
-    monthly_financial_data = []
-    for revenue_item in monthly_revenue_data:
-        month = revenue_item['month']
-        revenue = revenue_item['total_revenue']
-        expenditure = monthly_expenditure_data.get(month, 0)
-        profit = revenue - expenditure
-
-        monthly_financial_data.append({
-            'month': month,
-            'revenue': revenue,
-            'expenditure': expenditure,
-            'profit': profit,
-        })
-
-    # Sort the data by month
-    monthly_financial_data.sort(key=lambda x: x['month'])
-
-    # Pass data to the template
-    context = {
-        'monthly_financial_data': monthly_financial_data,
-    }
-    return context
 
 
 @staff_member_required

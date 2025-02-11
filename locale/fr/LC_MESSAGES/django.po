@@ -353,3 +353,6 @@ msgstr "Montant dû"
 
 msgid "No clients with due amounts."
 msgstr "Aucun client avec un solde dû."
+
+msgid "Actual Daily Rate"
+msgstr "Tarif journalier réel"

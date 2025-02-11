@@ -223,7 +223,7 @@ class Reservation(models.Model):
     pickup_time = models.TimeField(_("Pickup Time"), default=time(12, 0))  # Default 12:00 PM
     dropoff_time = models.TimeField(_("Dropoff Time"), default=time(12, 0))  # Default 12:00 PM
     status = models.CharField(_("Status"), max_length=20, choices=STATUS_CHOICES, default="pending")
-
+    actual_daily_rate = models.DecimalField(_('Actual Daily Rate'), max_digits=10, decimal_places=2, blank=True, null=True)
     
     total_cost = models.DecimalField(
         _("Total Cost"), max_digits=12, decimal_places=2, blank=True
@@ -314,7 +314,7 @@ class Reservation(models.Model):
         Calculate total cost of the reservation based on the rental period.
         """
         rental_days = (self.end_date - self.start_date).days
-        return rental_days * self.car.daily_rate
+        return rental_days * self.actual_daily_rate
 
     def update_payment_status(self):
         """
@@ -329,7 +329,8 @@ class Reservation(models.Model):
         self.save(update_fields=['payment_status'])
 
     def save(self, *args, **kwargs):
-        # Calculate the total cost of the reservation
+        if self.actual_daily_rate is None:  # Set default only if not provided
+            self.actual_daily_rate = self.car.daily_rate
         self.total_cost = self.calculate_total_cost()
         old_instance = Reservation.objects.filter(pk=self.pk).first()
         if not old_instance or old_instance.start_date != self.start_date or old_instance.end_date != self.end_date or old_instance.car != self.car:
