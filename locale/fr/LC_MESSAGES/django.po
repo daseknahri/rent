@@ -356,3 +356,21 @@ msgstr "Aucun client avec un solde dû."
 
 msgid "Actual Daily Rate"
 msgstr "Tarif journalier réel"
+
+msgid "Rental Days by Car per Month"
+msgstr "Jours de location par voiture par mois"
+
+msgid "Number Of Rental Days"
+msgstr "Nombre de jours de location"
+
+msgid "View Rental Days"
+msgstr "Voir les jours de location"
+
+msgid "Rental Days"
+msgstr "Jours de location"
+
+msgid "No rental data available."
+msgstr "Aucune donnée de location disponible"
+
+msgid "No car data available."
+msgstr "Aucune donnée de voiture disponible"

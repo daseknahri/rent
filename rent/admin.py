@@ -220,7 +220,7 @@ class ReservationInline(admin.TabularInline):
 ### CAR ADMIN ###
 @admin.register(Car)
 class CarAdmin(admin.ModelAdmin):
-    list_display = ('brand', 'model', 'daily_rate', 'total_expenditure','is_available')
+    list_display = ('brand', 'model', 'plate_number', 'daily_rate', 'total_expenditure','is_available')
     list_filter = ('daily_rate', 'is_available',)  # Filter by car brand and year
     search_fields = ('plate_number', 'brand',)  # Search by plate number, brand, or model
     readonly_fields = ('total_expenditure',)  # Prevent editing total expenditure
@@ -303,7 +303,7 @@ class ReservationAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (_("Reservation Details"), {  # Translated Section Title
-            'fields': ('car', 'client', 'drivers', 'actual_daily_rate', 'pickup_time', 'start_date','end_date', 'dropoff_time')
+            'fields': ('car', 'client', 'drivers', 'actual_daily_rate', 'start_date', 'pickup_time','end_date', 'dropoff_time')
         }),
         (_("Payment Information"), {  # Translated Section Title
             'fields': ('total_paid', 'total_cost', 'payment_status')

@@ -23,7 +23,9 @@
                             console.log("Car daily rate fetched:", carDailyRate);
 
                             // ✅ Set the actual daily rate (user can still change it manually)
-                            $("#id_actual_daily_rate").val(carDailyRate.toFixed(2));
+                            if ($("#id_actual_daily_rate").val() === "") {
+                                $("#id_actual_daily_rate").val(carDailyRate.toFixed(2));
+                            }
 
                             if (callback) callback(); // Trigger total cost recalculation
                         }

@@ -347,4 +347,23 @@ msgstr "لا يوجد عملاء لديهم مبالغ مستحقة."
 msgid "Actual Daily Rate"
 msgstr "السعر اليومي الفعلي"
 
+msgid "Rental Days by Car per Month"
+msgstr "أيام الإيجار حسب السيارة لكل شهر"
+
+msgid "Number Of Rental Days"
+msgstr "عدد أيام الإيجار"
+
+msgid "View Rental Days"
+msgstr "عرض أيام الإيجار"
+
+msgid "Rental Days"
+msgstr "أيام الإيجار"
+
+msgid "No rental data available."
+msgstr "لا توجد بيانات إيجار متاحة"
+
+msgid "No car data available."
+msgstr "لا توجد بيانات للسيارات متاحة"
+
+
 

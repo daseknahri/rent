@@ -114,15 +114,7 @@ class Car(models.Model):
         super().delete(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.model} ({_('Available') if self.is_available else _('Not Available')})"
-    def total_profit(self):
-        """Calculate the client's age based on their date of birth."""
-        if self.date_of_birth:
-            today = date.today()
-            return today.year - self.date_of_birth.year - (
-                (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
-            )
-        return None
+        return f"{self.plate_number} ({_('Available') if self.is_available else _('Not Available')})"
 
 class Client(models.Model):
     name = models.CharField(_("Name"), max_length=20, unique=True)  # Translated
@@ -314,7 +306,7 @@ class Reservation(models.Model):
         self.pdf_receipt = f'reservations/pdfs/reservation_{self.pk}.pdf'
 
     def __str__(self):
-        return f"{_("Reservation")} {self.pk}: {self.client.name} - {self.car.model}"
+        return f"{_("Reservation")} {self.pk}: {self.client.name} - {self.car.plate_number}"
 
     def calculate_total_cost(self):
         """
@@ -393,7 +385,7 @@ class CarExpenditure(models.Model):
         self.car.get_total_expenditure()  
 
     def __str__(self):
-        return f"{_("Car Expenditure")} {self.car}: {self.description} - {self.cost}"
+        return f"{_("Car Expenditure")} {self.car.plate_number}: {self.description} - {self.cost}"
 
 class Payment(models.Model):
     reservation = models.ForeignKey(
