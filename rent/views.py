@@ -9,6 +9,7 @@ from rent.helper import calculate_rental_days_for_months
 from .models import Car, Reservation, Client, Payment, BusinessExpenditure, CarExpenditure, CustomerInfo
 from django.http import JsonResponse
 from django.utils.translation import get_language
+from collections import defaultdict
 
 
 def thank_you(request):
@@ -40,11 +41,36 @@ def admin_dashboard(request):
     current_date = now().date()
 
     # Monthly revenue and expenditure data
-    monthly_revenue_data = Payment.objects.annotate(month=TruncMonth('payment_date')) \
-        .values('month') \
-        .annotate(total_revenue=Sum('amount')) \
-        .order_by('month')
+    from collections import defaultdict
 
+# Initialize dictionary to store revenue per month
+    monthly_revenue_data = defaultdict(float)
+
+# Iterate through reservations
+    for reservation in Reservation.objects.all():
+        start_date = reservation.start_date
+        end_date = reservation.end_date
+        daily_rate = reservation.actual_daily_rate or reservation.car.daily_rate
+
+        # Split rental days across months
+        while start_date <= end_date:
+            month = start_date.replace(day=1)
+
+            # Determine the last day of the current month
+            last_day_of_month = (month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+
+            # Calculate rental days in this month
+            days_in_month = (min(end_date, last_day_of_month) - start_date).days + 1
+            monthly_revenue_data[month] += days_in_month * float(daily_rate)
+
+            # Move to the next month
+            start_date = last_day_of_month + timedelta(days=1)
+
+    # Convert to list format for sorting
+    monthly_revenue_data = [{'month': month, 'total_revenue': revenue} for month, revenue in monthly_revenue_data.items()]
+    monthly_revenue_data.sort(key=lambda x: x['month'])
+
+    # Calculate expenditures (keeping your original logic)
     monthly_car_expenditure_data = CarExpenditure.objects.annotate(month=TruncMonth('date')) \
         .values('month') \
         .annotate(total_expenditure=Sum('cost'))
@@ -53,20 +79,20 @@ def admin_dashboard(request):
         .values('month') \
         .annotate(total_expenditure=Sum('amount'))
 
-    # Combine expenditures
-    monthly_expenditure_data = {}
+    # Merge expenditures
+    monthly_expenditure_data = defaultdict(float)
     for item in monthly_car_expenditure_data:
-        monthly_expenditure_data[item['month']] = item['total_expenditure']
+        monthly_expenditure_data[item['month']] += item['total_expenditure']
     for item in monthly_business_expenditure_data:
-        monthly_expenditure_data[item['month']] = monthly_expenditure_data.get(item['month'], 0) + item['total_expenditure']
+        monthly_expenditure_data[item['month']] += item['total_expenditure']
 
-    # Merge revenue and expenditure into a single list with profit
+    # Merge revenue and expenditure into financial data
     monthly_financial_data = [
         {
             'month': revenue_item['month'],
             'revenue': revenue_item['total_revenue'],
-            'expenditure': monthly_expenditure_data.get(revenue_item['month'], 0),
-            'profit': revenue_item['total_revenue'] - monthly_expenditure_data.get(revenue_item['month'], 0),
+            'expenditure': monthly_expenditure_data[revenue_item['month']],
+            'profit': revenue_item['total_revenue'] - monthly_expenditure_data[revenue_item['month']],
         }
         for revenue_item in monthly_revenue_data
     ]
@@ -80,10 +106,21 @@ def admin_dashboard(request):
 
     # Total profit and expenses by car
     car_profit_data = []
+
     for car in Car.objects.all():
-        total_revenue = Payment.objects.filter(reservation__car=car).aggregate(Sum('amount'))['amount__sum'] or 0
+        # Calculate total revenue using reservation days * actual daily rate
+        total_revenue = sum(
+            reservation.rental_days * (reservation.actual_daily_rate or car.daily_rate)
+            for reservation in car.reservations.all()
+        )
+
+        # Calculate total expenditure for the car
         total_expense = CarExpenditure.objects.filter(car=car).aggregate(Sum('cost'))['cost__sum'] or 0
+
+        # Calculate profit
         profit = total_revenue - total_expense
+
+        # Append data
         car_profit_data.append({
             'car': car,
             'total_revenue': total_revenue,
