@@ -53,7 +53,7 @@ def admin_dashboard(request):
         daily_rate = reservation.actual_daily_rate or reservation.car.daily_rate
 
         # Split rental days across months
-        while start_date <= end_date:
+        while start_date < end_date:
             month = start_date.replace(day=1)
 
             # Determine the last day of the current month
@@ -140,17 +140,18 @@ def admin_dashboard(request):
             end_date = reservation.end_date
 
             # Split reservation into months
-            while start_date <= end_date:
+            while start_date < end_date:
                 month = start_date.replace(day=1)
-                if month not in rental_days_by_month:
-                    rental_days_by_month[month] = 0
-
-                # Calculate days in the current month of the reservation
-                days_in_month = min(end_date, month.replace(day=28) + timedelta(days=4)) - start_date
-                rental_days_by_month[month] += days_in_month.days
-
-                # Move to next month
-                start_date = (month + timedelta(days=32)).replace(day=1)
+                
+                # Determine the last day of the current month
+                last_day_of_month = (month + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+                
+                # Calculate the days in the current month
+                days_in_month = (min(end_date, last_day_of_month) - start_date).days + 1
+                rental_days_by_month[month] = rental_days_by_month.get(month, 0) + days_in_month
+                
+                # Move to the next month
+                start_date = last_day_of_month + timedelta(days=1)
 
         # Append data
         car_rental_days_data.append({

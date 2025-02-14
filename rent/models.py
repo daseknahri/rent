@@ -79,8 +79,8 @@ class Car(models.Model):
     brand = models.CharField(_("Brand"), max_length=20)
     model = models.CharField(_('Model'), max_length=20)
     plate_number = models.CharField(_('Registration Plate') , max_length=20, unique=True)
-    image = models.ImageField(_('Image'), upload_to='cars/') 
-    year = models.PositiveIntegerField(_('Year') ,default=2024)    
+    image = models.ImageField(_('Image'), upload_to='cars/')
+    year = models.PositiveIntegerField(_('Year') ,default=2024)
     gearbox = models.CharField(_('Transmission'),max_length=20, choices=GEARBOX_CHOICES, default='manual')
     fuel_type = models.CharField(_('Fuel Type'), max_length=20, choices=FUEL_CHOICES, default='Diesel')
     number_of_passengers = models.PositiveIntegerField(_('Number of passengers'), default=5)
@@ -396,7 +396,6 @@ class Payment(models.Model):
     class Meta:
         verbose_name = _("Payment")  # Sidebar translation
         verbose_name_plural = _("Payments")
-    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
@@ -427,7 +426,7 @@ class Payment(models.Model):
 class BusinessExpenditure(models.Model):
     type = models.ForeignKey("ExpenditureType", on_delete=models.CASCADE, related_name='BusinessExpenditures', verbose_name=_("Type"))
     amount = models.DecimalField(_("Amount"), max_digits=12, decimal_places=2)  # Cost
-    date = models.DateField(_("Date"), auto_now_add=True)  # Expenditure date
+    date = models.DateField(_("Date"), default=now)  # Expenditure date
     class Meta:
         verbose_name = _("Business Expenditure")  # Sidebar translation
         verbose_name_plural = _("Business Expenditures")
@@ -435,19 +434,12 @@ class BusinessExpenditure(models.Model):
         return f"{self.type} - {self.amount}"
 
 class ExpenditureType(models.Model): 
-
-
-
-
     type = models.CharField(_("Type"), max_length=20)
     class Meta:
         verbose_name = _("Expenditures Type") 
         verbose_name_plural = _("Expenditures Types")
     def __str__(self):
         return self.type
-
-
-
 
 class CustomerInfo(models.Model):
     name = models.CharField(max_length=255)

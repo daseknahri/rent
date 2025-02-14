@@ -371,7 +371,7 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ('reservation', 'amount', 'payment_date')
     list_filter = ('payment_date',)  # Filter by payment date
     search_fields = ('reservation__car__plate_number', 'reservation__client__name')  # Search by car or client
-    readonly_fields = ('payment_date',)  # Prevent editing payment date
+    #readonly_fields = ('payment_date',)  # Prevent editing payment date
     actions = [custom_delete_selected]
 
     fieldsets = (
@@ -394,7 +394,7 @@ class CarExpenditureAdmin(admin.ModelAdmin):
     list_display = ('car', 'description', 'cost', 'date')
     list_filter = ('date', 'car')  # Filter by expenditure date
     search_fields = ('car__name', 'description')  # Search by car plate number or description
-    readonly_fields = ('date',)  # Prevent editing the date
+    #readonly_fields = ('date',)  # Prevent editing the date
     actions = [custom_delete_selected]
 
     fieldsets = (

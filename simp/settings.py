@@ -49,8 +49,14 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
+MATERIAL_RTL = True
 
 INSTALLED_APPS = [
+    #'admin_interface',   # New modern UI
+    #'colorfield',  
+    #"jazzmin",
+    #'material',
+    #'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -139,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 TIME_ZONE = 'Africa/Casablanca'
 
-
+MATERIAL_ADMIN_STYLE = 'default'  # Or 'modern' if you prefer the more modern style
 
 
 # Static files (CSS, JavaScript, Images)

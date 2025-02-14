@@ -164,3 +164,46 @@ div.app-auth.module {
 .table tbody td:last-child {
     font-weight: bold;
 }
+
+.summary-box {
+    flex: 1;
+    text-align: center;
+    background: #fcf9f8;
+    border-radius: 0.375rem;
+}
+
+.financial-table th {
+    background-color: #f7fafc;
+}
+
+.financial-table tr:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+.financial-table tr:hover {
+    background-color: #e2e8f0;
+}
+
+.financial-table td {
+    font-size: 14px;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+}
+.btn {
+    cursor: pointer;
+}
+.financial-table th {
+    background-color: #f7fafc;
+}
+
+.financial-table tr:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+.financial-table tr:hover {
+    background-color: #e2e8f0;
+}
+
+.hidden {
+    display: none;
+}
